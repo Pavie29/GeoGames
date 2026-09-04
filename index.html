@@ -1,0 +1,1534 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GeoGames — World Geography Games</title>
+<meta name="description" content="A collection of modern geography games: guess countries by shape, flag, capital, population and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --bg:#eef1f6; --surface:#ffffff; --surface2:#f5f7fa; --sunk:#eef1f5;
+  --ink:#141821; --muted:#6b7488; --line:#e6e9f0; --line-strong:#d4d9e4;
+  --primary:#3563e9; --primary-ink:#254fc4; --primary-tint:#eaf0ff;
+  --good:#17a866; --good-bg:#e2f7ee; --warn:#e08a10; --warn-bg:#fdf0d8; --bad:#e23b47; --bad-bg:#fde6e8;
+  --shadow:0 1px 2px rgba(20,26,45,.04),0 4px 14px rgba(20,26,45,.06);
+  --shadow-md:0 6px 20px rgba(20,26,45,.10);
+  --shadow-lg:0 18px 44px rgba(20,26,45,.16);
+  --r:14px; --r-lg:20px; --r-sm:10px;
+}
+:root[data-theme="dark"]{
+  --bg:#0c0f16; --surface:#151a24; --surface2:#1b2130; --sunk:#0f131b;
+  --ink:#eaeefc; --muted:#93a0bd; --line:#252c3b; --line-strong:#333c4f;
+  --primary:#5b82ff; --primary-ink:#3f66ea; --primary-tint:#1a2136;
+  --good:#3ad78f; --good-bg:#0f2a1e; --warn:#f0b44a; --warn-bg:#33270f; --bad:#ff6b76; --bad-bg:#331419;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.35);
+  --shadow-md:0 8px 24px rgba(0,0,0,.4);
+  --shadow-lg:0 20px 50px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:0}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+.container{max-width:1080px;margin:0 auto;padding:0 22px}
+::selection{background:var(--primary);color:#fff}
+
+/* header */
+header.top{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top .row{display:flex;align-items:center;gap:14px;height:66px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:21px;letter-spacing:-.02em}
+.brand .mark{width:30px;height:30px;flex:none}
+.brand .mark path{fill:var(--primary);stroke:none}
+.brand:hover .mark{transform:rotate(-12deg);transition:.2s}
+.spacer{flex:1}
+.icon-btn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;font-size:17px;box-shadow:var(--shadow);transition:.15s}
+.icon-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.nav-home{font-weight:700;font-size:14px;padding:10px 16px;border-radius:12px;background:var(--primary);color:#fff;box-shadow:var(--shadow);transition:.15s}
+.nav-home:hover{background:var(--primary-ink);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+
+#offline{display:none;background:var(--warn-bg);color:var(--warn);border-bottom:1px solid var(--line);font-size:13px;font-weight:700;text-align:center;padding:9px 12px}
+#offline.show{display:block}
+
+main{padding:32px 0 88px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--primary);background:var(--primary-tint);border:1px solid color-mix(in srgb,var(--primary) 22%,transparent);padding:7px 14px;border-radius:999px;margin-bottom:18px}
+.page-head{margin:4px 0 26px}
+.page-head h1{font-size:clamp(28px,4.5vw,42px)}
+.page-head p{margin:10px 0 0;color:var(--muted);font-size:15.5px;max-width:640px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:16px}
+.back:hover{color:var(--primary)}
+
+/* hero */
+.hero{margin:6px 0 32px}
+.hero h1{font-size:clamp(38px,6.4vw,68px);line-height:1.02;letter-spacing:-.035em}
+.hero p{color:var(--muted);font-size:clamp(15px,2vw,18px);margin:16px 0 0;max-width:600px}
+
+/* category tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 22px}
+.tab{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-weight:700;font-size:14px;box-shadow:var(--shadow);transition:.14s}
+.tab:hover{color:var(--ink);border-color:var(--line-strong);transform:translateY(-1px)}
+.tab.on{background:var(--primary);border-color:transparent;color:#fff;box-shadow:var(--shadow-md)}
+.tab .tcount{font-size:11px;font-weight:800;background:color-mix(in srgb,var(--muted) 16%,transparent);color:var(--muted);padding:1px 8px;border-radius:999px;min-width:20px;text-align:center}
+.tab.on .tcount{background:rgba(255,255,255,.24);color:#fff}
+.stickybar{position:sticky;top:63px;z-index:30;background:var(--bg);padding:14px 0 4px;margin-bottom:6px}
+.toolbar{display:flex;gap:10px;margin-bottom:14px}
+.search{flex:1;min-width:0;padding:11px 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--font);font-size:15px;font-weight:500;outline:none;box-shadow:var(--shadow)}
+.search:focus{border-color:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 15%,transparent)}
+.tr{display:flex;align-items:center;gap:9px}
+.fav{border:none;background:transparent;color:var(--muted);font-size:19px;line-height:1;padding:0;cursor:pointer;transition:.12s;opacity:.6}
+.fav:hover{opacity:1;transform:scale(1.2)}
+.fav.on{color:#f5a623;opacity:1}
+/* achievements */
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:12px}
+.ach{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--surface2);opacity:.65}
+.ach.on{opacity:1;background:var(--surface);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--primary) 30%,var(--line))}
+.ach .ae{font-size:26px;filter:grayscale(1) opacity(.7)}
+.ach.on .ae{filter:none}
+.ach .an{font-weight:800;font-size:14.5px}
+.ach .ad{font-size:12.5px;color:var(--muted);line-height:1.35}
+.ach .atick{color:var(--good);font-weight:800;font-size:16px}
+.ach .alock{opacity:.5}
+.btable{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.brow{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--surface);transition:.12s;color:var(--ink)}
+.brow:last-child{border-bottom:0}
+.brow:hover{background:var(--surface2)}
+.brow .bem{font-size:18px;width:24px;text-align:center}
+.brow .bn{font-weight:700;flex:1}
+.brow .bv{font-weight:700;color:var(--muted);font-size:13.5px}
+/* atlas */
+.agridc{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px}
+.ccard{display:flex;flex-direction:column;align-items:center;gap:8px;padding:13px;border-radius:14px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);cursor:pointer;transition:.14s;color:var(--ink);font-family:var(--font)}
+.ccard:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:color-mix(in srgb,var(--primary) 40%,var(--line))}
+.ccard .flag{width:100%;height:auto;aspect-ratio:3/2}
+.ccard .cn{font-weight:800;font-size:14px;text-align:center;line-height:1.2}
+.ccard .cc{text-align:center}
+.inforow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.il{font-weight:700;color:var(--muted);font-size:13px}
+.iv{font-weight:700;font-size:14px;text-align:right}
+/* accessibility: visible keyboard focus */
+a:focus-visible,button:focus-visible,input:focus-visible,.gcard:focus-visible,.tab:focus-visible,.opt:focus-visible,.ccard:focus-visible,.mcard:focus-visible{outline:3px solid color-mix(in srgb,var(--primary) 55%,transparent);outline-offset:2px;border-radius:10px}
+.ac-input:focus-visible{outline:none}
+
+/* game grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:18px}
+.gcard{--cc:#3563e9;position:relative;display:flex;flex-direction:column;gap:11px;padding:22px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;transition:.18s;min-height:190px}
+.gcard::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--cc);opacity:.9}
+.gcard:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--cc) 45%,var(--line))}
+.gcard:nth-child(9n+1){--cc:#3563e9}
+.gcard:nth-child(9n+2){--cc:#17a866}
+.gcard:nth-child(9n+3){--cc:#f2971b}
+.gcard:nth-child(9n+4){--cc:#8b5cf6}
+.gcard:nth-child(9n+5){--cc:#ef4d5b}
+.gcard:nth-child(9n+6){--cc:#0eabc7}
+.gcard:nth-child(9n+7){--cc:#ec4899}
+.gcard:nth-child(9n+8){--cc:#78bd1a}
+.gcard:nth-child(9n+9){--cc:#f2711b}
+.gcard-top{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.gcard .idx{font-size:11px;font-weight:800;color:#fff;background:var(--cc);padding:3px 9px;border-radius:999px;letter-spacing:.02em}
+.gcard .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.gcard .em{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;font-size:28px;background:color-mix(in srgb,var(--cc) 15%,var(--surface));border:1px solid color-mix(in srgb,var(--cc) 22%,transparent)}
+.gcard h3{font-size:21px}
+.gcard p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5;flex:1}
+.gcard .stat{font-size:12.5px;font-weight:600;color:var(--muted);display:flex;gap:6px;align-items:center}
+.gcard .stat b{color:var(--ink);font-weight:800}
+
+/* panels */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:24px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.center{display:flex;flex-direction:column;align-items:center;gap:16px}
+.muted{color:var(--muted)}
+.row-wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* buttons */
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:11px 18px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:var(--shadow);transition:.15s}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.btn.primary{background:var(--primary);border-color:transparent;color:#fff}
+.btn.primary:hover{background:var(--primary-ink)}
+.btn.ghost{background:transparent;box-shadow:none}
+.btn.ghost:hover{background:var(--surface2);transform:none;box-shadow:none}
+.btn:disabled{opacity:.5;cursor:default;transform:none;box-shadow:var(--shadow)}
+.btn.big{padding:14px 24px;font-size:16px}
+
+/* stat chips */
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:10px 16px;text-align:center;min-width:82px}
+.chip .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:800}
+.chip .v{font-size:23px;font-weight:800;margin-top:2px;letter-spacing:-.02em}
+
+/* flags */
+.flag{border-radius:7px;border:1px solid var(--line);object-fit:cover;background:var(--surface2);display:block}
+.flag.shadow{box-shadow:var(--shadow)}
+
+/* autocomplete */
+.ac-wrap{position:relative;width:100%}
+.ac-input{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--font);font-size:16px;font-weight:600;outline:none;transition:.15s}
+.ac-input:focus{border-color:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 16%,transparent)}
+.ac-input:disabled{opacity:.55}
+.ac-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:40;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);max-height:264px;overflow:auto;padding:6px}
+.ac-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;font-size:14.5px;font-weight:600}
+.ac-item small{font-size:12px;color:var(--muted);font-weight:600;margin-left:auto}
+.ac-item.active,.ac-item:hover{background:var(--primary-tint)}
+
+/* guess rows */
+.guesses{display:flex;flex-direction:column;gap:8px}
+.guess{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:13px;background:var(--surface2);border:1px solid var(--line);animation:pop .22s ease}
+.guess .gname{font-weight:700;flex:1;display:flex;align-items:center;gap:9px}
+.guess .prox{font-weight:800}
+.guess .arrow{font-size:18px;width:24px;text-align:center}
+.guess.correct{background:var(--good-bg);border-color:color-mix(in srgb,var(--good) 40%,transparent)}
+.guess .bar{height:7px;border-radius:5px;background:var(--sunk);overflow:hidden;width:68px}
+.guess .bar>i{display:block;height:100%;border-radius:5px;background:var(--primary)}
+@keyframes pop{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+/* MC options */
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{padding:15px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:15px;text-align:center;transition:.13s;color:var(--ink);box-shadow:var(--shadow)}
+.opt:hover:not(:disabled){border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.opt.right{background:var(--good);border-color:transparent;color:#fff}
+.opt.wrong{background:var(--bad);border-color:transparent;color:#fff}
+.opt:disabled{cursor:default;box-shadow:none}
+
+/* progress */
+.prog{height:9px;border-radius:6px;background:var(--sunk);overflow:hidden}
+.prog>i{display:block;height:100%;border-radius:6px;background:var(--primary);transition:width .3s}
+
+/* map */
+.mapwrap{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:var(--surface2);touch-action:none;box-shadow:var(--shadow)}
+.mapwrap svg{display:block;width:100%;height:auto}
+.geo{fill:color-mix(in srgb,var(--muted) 24%,var(--surface));stroke:var(--surface);stroke-width:.4;transition:fill .12s;cursor:pointer}
+.geo:hover{fill:color-mix(in srgb,var(--primary) 60%,var(--surface))}
+.geo.right{fill:var(--good)!important}
+.geo.wrong{fill:var(--bad)!important}
+.geo.reveal{fill:var(--warn)!important}
+.geo.static{cursor:default;pointer-events:none}
+.sil{fill:var(--primary);stroke:var(--primary-ink);stroke-width:1.2;stroke-linejoin:round}
+.map-hint{position:absolute;top:12px;left:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:9px;box-shadow:var(--shadow)}
+.zoomctl{position:absolute;bottom:12px;right:12px;display:flex;flex-direction:column;gap:6px}
+.zoomctl button{width:36px;height:36px;border-radius:11px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:18px;font-weight:800;box-shadow:var(--shadow)}
+.zoomctl button:hover{background:var(--primary);color:#fff}
+
+/* modal */
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(15,20,35,.5);backdrop-filter:blur(4px);display:grid;place-items:center;padding:20px;animation:fade .18s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow-lg);max-width:440px;width:100%;padding:30px;text-align:center;animation:rise .28s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.modal h2{margin:8px 0 4px;font-size:27px}
+.modal .big-em{font-size:46px}
+.share-grid{font-size:20px;letter-spacing:2px;line-height:1.5;margin:12px 0;font-family:ui-monospace,monospace}
+
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--primary);animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{background:var(--ink);color:var(--surface);padding:12px 20px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:var(--shadow-lg);animation:rise .22s}
+
+/* higher-lower */
+.hl{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}
+.hl .side{background:var(--surface2);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;justify-content:center}
+.hl .vs{display:grid;place-items:center;font-weight:800;color:var(--muted);font-size:15px}
+.hl .metric{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.hl .qmark{font-size:34px;font-weight:800;color:var(--muted)}
+.hl .cname{font-size:20px;font-weight:800}
+@media(max-width:560px){.hl{grid-template-columns:1fr;gap:10px}.options{grid-template-columns:1fr}}
+
+.flex{display:flex;gap:12px;align-items:center}
+.wrap-tiles{position:relative;width:min(360px,86vw);aspect-ratio:3/2;margin:0 auto}
+.wrap-tiles img{width:100%;height:100%;object-fit:cover;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.tiles{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);border-radius:14px;overflow:hidden}
+.tiles i{background:var(--surface2);border:1px solid var(--line);transition:opacity .4s}
+.tiles i.rev{opacity:0}
+.seg{display:inline-flex;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:3px}
+.seg button{padding:8px 15px;background:transparent;border:none;border-radius:9px;color:var(--muted);font-weight:700;font-size:13.5px}
+.seg button.on{background:var(--primary);color:#fff;box-shadow:var(--shadow)}
+.small{font-size:13px}
+.kbd{font-family:ui-monospace,monospace;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12px}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:540px;margin:0 auto}
+.mcard{aspect-ratio:3/2;border:1.5px solid var(--line);border-radius:12px;background:var(--surface2);display:grid;place-items:center;cursor:pointer;font-weight:700;font-size:13px;text-align:center;padding:5px;transition:.15s;overflow:hidden;box-shadow:var(--shadow)}
+.mcard:hover{border-color:var(--primary)}
+.mcard.face{background:var(--surface)}
+.mcard.matched{border-color:var(--good);background:var(--good-bg);cursor:default;box-shadow:none}
+.mcard img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.mcard .back{font-size:24px;color:var(--muted);font-weight:800}
+@media(max-width:480px){.mgrid{gap:7px}.mcard{font-size:11px}}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="container row">
+    <a class="brand" href="#/"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.2 L14.3 9.7 L22.8 12 L14.3 14.3 L12 22.8 L9.7 14.3 L1.2 12 L9.7 9.7 Z"/></svg><span>GeoGames</span></a>
+    <div class="spacer"></div>
+    <a class="nav-home" href="#/">All games</a>
+    <a class="icon-btn" href="#/atlas" title="Atlas — study the countries" aria-label="Atlas">📖</a>
+    <a class="icon-btn" id="statsBtn" href="#/stats" title="Your stats & achievements" aria-label="Stats">📊</a>
+    <button class="icon-btn" id="sfxBtn" title="Toggle sound" aria-label="Toggle sound">🔊</button>
+    <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+  </div>
+  <div id="offline">⚠️ You appear to be offline — flags and maps need an internet connection. Text-based games still work.</div>
+</header>
+<main><div class="container" id="view"></div></main>
+<div id="toast"></div>
+<canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:150;display:none"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+"use strict";
+const COUNTRIES = [{"n":"Afghanistan","id":4,"a2":"af","a3":"AFG","cap":"Kabul","pop":37172386,"area":652230,"reg":"Asia","sub":"Southern Asia","lat":33,"lng":65,"bord":["IRN","PAK","TKM","UZB","TJK","CHN"],"alt":["AF","Afġānistān"],"ll":true,"cur":"Afghan afghani","lang":"Dari"},{"n":"Angola","id":24,"a2":"ao","a3":"AGO","cap":"Luanda","pop":30809762,"area":1246700,"reg":"Africa","sub":"Middle Africa","lat":-12.5,"lng":18.5,"bord":["COG","COD","ZMB","NAM"],"alt":["AO","República de Angola","ʁɛpublika de an\u0027ɡɔla"],"ll":false,"cur":"Angolan kwanza","lang":"Portuguese"},{"n":"Albania","id":8,"a2":"al","a3":"ALB","cap":"Tirana","pop":2866376,"area":28748,"reg":"Europe","sub":"Southeast Europe","lat":41,"lng":20,"bord":["MNE","GRC","MKD","UNK"],"alt":["AL","Shqipëri","Shqipëria","Shqipnia"],"ll":false,"cur":"Albanian lek","lang":"Albanian"},{"n":"Andorra","id":20,"a2":"ad","a3":"AND","cap":"Andorra la Vella","pop":77006,"area":468,"reg":"Europe","sub":"Southern Europe","lat":42.5,"lng":1.5,"bord":["FRA","ESP"],"alt":["AD","Principality of Andorra","Principat d\u0027Andorra"],"ll":true,"cur":"Euro","lang":"Catalan"},{"n":"United Arab Emirates","id":784,"a2":"ae","a3":"ARE","cap":"Abu Dhabi","pop":9630959,"area":83600,"reg":"Asia","sub":"Western Asia","lat":24,"lng":54,"bord":["OMN","SAU"],"alt":["AE","UAE","Emirates"],"ll":false,"cur":"United Arab Emirates dirham","lang":"Arabic"},{"n":"Argentina","id":32,"a2":"ar","a3":"ARG","cap":"Buenos Aires","pop":44494502,"area":2780400,"reg":"Americas","sub":"South America","lat":-34,"lng":-64,"bord":["BOL","BRA","CHL","PRY","URY"],"alt":["AR","Argentine Republic","República Argentina"],"ll":false,"cur":"Argentine peso","lang":"Guaraní"},{"n":"Armenia","id":51,"a2":"am","a3":"ARM","cap":"Yerevan","pop":2951776,"area":29743,"reg":"Asia","sub":"Western Asia","lat":40,"lng":45,"bord":["AZE","GEO","IRN","TUR"],"alt":["AM","Hayastan","Republic of Armenia","Հայաստանի Հանրապետություն"],"ll":true,"cur":"Armenian dram","lang":"Armenian"},{"n":"Antigua and Barbuda","id":28,"a2":"ag","a3":"ATG","cap":"Saint John\u0027s","pop":96286,"area":442,"reg":"Americas","sub":"Caribbean","lat":17.05,"lng":-61.8,"bord":[],"alt":["AG"],"ll":false,"cur":"Eastern Caribbean dollar","lang":"English"},{"n":"Australia","id":36,"a2":"au","a3":"AUS","cap":"Canberra","pop":24982688,"area":7692024,"reg":"Oceania","sub":"Australia and New Zealand","lat":-27,"lng":133,"bord":[],"alt":["AU"],"ll":false,"cur":"Australian dollar","lang":"English"},{"n":"Austria","id":40,"a2":"at","a3":"AUT","cap":"Vienna","pop":8840521,"area":83871,"reg":"Europe","sub":"Central Europe","lat":47.33,"lng":13.33,"bord":["CZE","DEU","HUN","ITA","LIE","SVK","SVN","CHE"],"alt":["AT","Osterreich","Oesterreich"],"ll":true,"cur":"Euro","lang":"Austro-Bavarian German"},{"n":"Azerbaijan","id":31,"a2":"az","a3":"AZE","cap":"Baku","pop":9939800,"area":86600,"reg":"Asia","sub":"Western Asia","lat":40.5,"lng":47.5,"bord":["ARM","GEO","IRN","RUS","TUR"],"alt":["AZ","Republic of Azerbaijan","Azərbaycan Respublikası"],"ll":true,"cur":"Azerbaijani manat","lang":"Azerbaijani"},{"n":"Burundi","id":108,"a2":"bi","a3":"BDI","cap":"Gitega","pop":11175378,"area":27834,"reg":"Africa","sub":"Eastern Africa","lat":-3.5,"lng":30,"bord":["COD","RWA","TZA"],"alt":["BI","Republic of Burundi","Republika y\u0027Uburundi","République du Burundi"],"ll":true,"cur":"Burundian franc","lang":"French"},{"n":"Belgium","id":56,"a2":"be","a3":"BEL","cap":"Brussels","pop":11433256,"area":30528,"reg":"Europe","sub":"Western Europe","lat":50.83,"lng":4,"bord":["FRA","DEU","LUX","NLD"],"alt":["BE","België","Belgie","Belgien","Belgique","Kingdom of Belgium","Koninkrijk België","Royaume de Belgique","Königreich Belgien"],"ll":false,"cur":"Euro","lang":"German"},{"n":"Benin","id":204,"a2":"bj","a3":"BEN","cap":"Porto-Novo","pop":11485048,"area":112622,"reg":"Africa","sub":"Western Africa","lat":9.5,"lng":2.25,"bord":["BFA","NER","NGA","TGO"],"alt":["BJ","Republic of Benin","République du Bénin"],"ll":false,"cur":"West African CFA franc","lang":"French"},{"n":"Burkina Faso","id":854,"a2":"bf","a3":"BFA","cap":"Ouagadougou","pop":19751535,"area":272967,"reg":"Africa","sub":"Western Africa","lat":13,"lng":-2,"bord":["BEN","CIV","GHA","MLI","NER","TGO"],"alt":["BF"],"ll":true,"cur":"West African CFA franc","lang":"French"},{"n":"Bangladesh","id":50,"a2":"bd","a3":"BGD","cap":"Dhaka","pop":161356039,"area":147570,"reg":"Asia","sub":"Southern Asia","lat":24,"lng":90,"bord":["MMR","IND"],"alt":["BD","People\u0027s Republic of Bangladesh","Gônôprôjatôntri Bangladesh"],"ll":false,"cur":"Bangladeshi taka","lang":"Bengali"},{"n":"Bulgaria","id":100,"a2":"bg","a3":"BGR","cap":"Sofia","pop":7025037,"area":110879,"reg":"Europe","sub":"Southeast Europe","lat":43,"lng":25,"bord":["GRC","MKD","ROU","SRB","TUR"],"alt":["BG","Republic of Bulgaria","Република България"],"ll":false,"cur":"Euro","lang":"Bulgarian"},{"n":"Bahrain","id":48,"a2":"bh","a3":"BHR","cap":"Manama","pop":1569439,"area":765,"reg":"Asia","sub":"Western Asia","lat":26,"lng":50.55,"bord":[],"alt":["BH","Kingdom of Bahrain","Mamlakat al-Baḥrayn"],"ll":false,"cur":"Bahraini dinar","lang":"Arabic"},{"n":"Bahamas","id":44,"a2":"bs","a3":"BHS","cap":"Nassau","pop":385640,"area":13943,"reg":"Americas","sub":"Caribbean","lat":24.25,"lng":-76,"bord":[],"alt":["BS","Commonwealth of the Bahamas"],"ll":false,"cur":"Bahamian dollar","lang":"English"},{"n":"Bosnia and Herzegovina","id":70,"a2":"ba","a3":"BIH","cap":"Sarajevo","pop":3323929,"area":51209,"reg":"Europe","sub":"Southeast Europe","lat":44,"lng":18,"bord":["HRV","MNE","SRB"],"alt":["BA","Bosnia-Herzegovina","Босна и Херцеговина"],"ll":false,"cur":"Bosnia and Herzegovina convertible mark","lang":"Bosnian"},{"n":"Belarus","id":112,"a2":"by","a3":"BLR","cap":"Minsk","pop":9483499,"area":207600,"reg":"Europe","sub":"Eastern Europe","lat":53,"lng":28,"bord":["LVA","LTU","POL","RUS","UKR"],"alt":["BY","Bielaruś","Republic of Belarus","Белоруссия","Республика Белоруссия"],"ll":true,"cur":"Belarusian ruble","lang":"Belarusian"},{"n":"Belize","id":84,"a2":"bz","a3":"BLZ","cap":"Belmopan","pop":383071,"area":22966,"reg":"Americas","sub":"Central America","lat":17.25,"lng":-88.75,"bord":["GTM","MEX"],"alt":["BZ"],"ll":false,"cur":"Belize dollar","lang":"Belizean Creole"},{"n":"Bolivia","id":68,"a2":"bo","a3":"BOL","cap":"Sucre","pop":11353142,"area":1098581,"reg":"Americas","sub":"South America","lat":-17,"lng":-65,"bord":["ARG","BRA","CHL","PRY","PER"],"alt":["BO","Buliwya","Wuliwya","Bolivia, Plurinational State of","Plurinational State of Bolivia","Estado Plurinacional de Bolivia","Buliwya Mamallaqta","Wuliwya Suyu","Tetã Volívia"],"ll":true,"cur":"Bolivian boliviano","lang":"Aymara"},{"n":"Brazil","id":76,"a2":"br","a3":"BRA","cap":"Brasília","pop":209469333,"area":8515767,"reg":"Americas","sub":"South America","lat":-10,"lng":-55,"bord":["ARG","BOL","COL","GUF","GUY","PRY","PER","SUR","URY","VEN"],"alt":["BR","Brasil","Federative Republic of Brazil","República Federativa do Brasil"],"ll":false,"cur":"Brazilian real","lang":"Portuguese"},{"n":"Barbados","id":52,"a2":"bb","a3":"BRB","cap":"Bridgetown","pop":286641,"area":430,"reg":"Americas","sub":"Caribbean","lat":13.17,"lng":-59.53,"bord":[],"alt":["BB"],"ll":false,"cur":"Barbadian dollar","lang":"English"},{"n":"Brunei","id":96,"a2":"bn","a3":"BRN","cap":"Bandar Seri Begawan","pop":428962,"area":5765,"reg":"Asia","sub":"South-Eastern Asia","lat":4.5,"lng":114.67,"bord":["MYS"],"alt":["BN","Brunei Darussalam","Nation of Brunei","the Abode of Peace"],"ll":false,"cur":"Brunei dollar","lang":"Malay"},{"n":"Bhutan","id":64,"a2":"bt","a3":"BTN","cap":"Thimphu","pop":754394,"area":38394,"reg":"Asia","sub":"Southern Asia","lat":27.5,"lng":90.5,"bord":["CHN","IND"],"alt":["BT","Kingdom of Bhutan"],"ll":true,"cur":"Bhutanese ngultrum","lang":"Dzongkha"},{"n":"Botswana","id":72,"a2":"bw","a3":"BWA","cap":"Gaborone","pop":2254126,"area":582000,"reg":"Africa","sub":"Southern Africa","lat":-22,"lng":24,"bord":["NAM","ZAF","ZMB","ZWE"],"alt":["BW","Republic of Botswana","Lefatshe la Botswana"],"ll":true,"cur":"Botswana pula","lang":"English"},{"n":"Central African Republic","id":140,"a2":"cf","a3":"CAF","cap":"Bangui","pop":4666377,"area":622984,"reg":"Africa","sub":"Middle Africa","lat":7,"lng":21,"bord":["CMR","TCD","COD","COG","SSD","SDN"],"alt":["CF","Central African Republic","République centrafricaine"],"ll":true,"cur":"Central African CFA franc","lang":"French"},{"n":"Canada","id":124,"a2":"ca","a3":"CAN","cap":"Ottawa","pop":37057765,"area":9984670,"reg":"Americas","sub":"North America","lat":60,"lng":-95,"bord":["USA"],"alt":["CA"],"ll":false,"cur":"Canadian dollar","lang":"English"},{"n":"Switzerland","id":756,"a2":"ch","a3":"CHE","cap":"Bern","pop":8513227,"area":41284,"reg":"Europe","sub":"Western Europe","lat":47,"lng":8,"bord":["AUT","FRA","ITA","LIE","DEU"],"alt":["CH","Swiss Confederation","Schweiz","Suisse","Svizzera","Svizra"],"ll":true,"cur":"Swiss franc","lang":"French"},{"n":"Chile","id":152,"a2":"cl","a3":"CHL","cap":"Santiago","pop":18729160,"area":756102,"reg":"Americas","sub":"South America","lat":-30,"lng":-71,"bord":["ARG","BOL","PER"],"alt":["CL","Republic of Chile","República de Chile"],"ll":false,"cur":"Chilean peso","lang":"Spanish"},{"n":"China","id":156,"a2":"cn","a3":"CHN","cap":"Beijing","pop":1392730000,"area":9706961,"reg":"Asia","sub":"Eastern Asia","lat":35,"lng":105,"bord":["AFG","BTN","MMR","HKG","IND","KAZ","NPL","PRK","KGZ","LAO","MAC","MNG","PAK","RUS","TJK","VNM"],"alt":["CN","Zhōngguó","Zhongguo","Zhonghua","People\u0027s Republic of China","中华人民共和国","Zhōnghuá Rénmín Gònghéguó"],"ll":false,"cur":"Chinese yuan","lang":"Chinese"},{"n":"Ivory Coast","id":384,"a2":"ci","a3":"CIV","cap":"Yamoussoukro","pop":25069229,"area":322463,"reg":"Africa","sub":"Western Africa","lat":8,"lng":-5,"bord":["BFA","GHA","GIN","LBR","MLI"],"alt":["CI","Côte d\u0027Ivoire","Cote d\u0027Ivoire","Ivory Coast","Republic of Côte d\u0027Ivoire","République de Côte d\u0027Ivoire"],"ll":false,"cur":"West African CFA franc","lang":"French"},{"n":"Cameroon","id":120,"a2":"cm","a3":"CMR","cap":"Yaoundé","pop":25216237,"area":475442,"reg":"Africa","sub":"Middle Africa","lat":6,"lng":12,"bord":["CAF","TCD","COG","GNQ","GAB","NGA"],"alt":["CM","Republic of Cameroon","République du Cameroun"],"ll":false,"cur":"Central African CFA franc","lang":"English"},{"n":"DR Congo","id":180,"a2":"cd","a3":"COD","cap":"Kinshasa","pop":95894118,"area":2344858,"reg":"Africa","sub":"Middle Africa","lat":0,"lng":25,"bord":["AGO","BDI","CAF","COG","RWA","SSD","TZA","UGA","ZMB"],"alt":["CD","DR Congo","Congo-Kinshasa","Congo, the Democratic Republic of the","Democratic Republic of Congo","DRC"],"ll":false,"cur":"Congolese franc","lang":"French"},{"n":"Congo","id":178,"a2":"cg","a3":"COG","cap":"Brazzaville","pop":5244363,"area":342000,"reg":"Africa","sub":"Middle Africa","lat":-1,"lng":15,"bord":["AGO","CMR","CAF","COD","GAB"],"alt":["CG","Congo","Congo-Brazzaville"],"ll":false,"cur":"Central African CFA franc","lang":"French"},{"n":"Colombia","id":170,"a2":"co","a3":"COL","cap":"Bogotá","pop":49648685,"area":1141748,"reg":"Americas","sub":"South America","lat":4,"lng":-72,"bord":["BRA","ECU","PAN","PER","VEN"],"alt":["CO","Republic of Colombia","República de Colombia"],"ll":false,"cur":"Colombian peso","lang":"Spanish"},{"n":"Comoros","id":174,"a2":"km","a3":"COM","cap":"Moroni","pop":832322,"area":1862,"reg":"Africa","sub":"Eastern Africa","lat":-12.17,"lng":44.25,"bord":[],"alt":["KM","Union of the Comoros","Union des Comores","Udzima wa Komori","al-Ittiḥād al-Qumurī"],"ll":false,"cur":"Comorian franc","lang":"Arabic"},{"n":"Cape Verde","id":132,"a2":"cv","a3":"CPV","cap":"Praia","pop":561898,"area":4033,"reg":"Africa","sub":"Western Africa","lat":16,"lng":-24,"bord":[],"alt":["CV","Republic of Cabo Verde","República de Cabo Verde"],"ll":false,"cur":"Cape Verdean escudo","lang":"Portuguese"},{"n":"Costa Rica","id":188,"a2":"cr","a3":"CRI","cap":"San José","pop":4999441,"area":51100,"reg":"Americas","sub":"Central America","lat":10,"lng":-84,"bord":["NIC","PAN"],"alt":["CR","Republic of Costa Rica","República de Costa Rica"],"ll":false,"cur":"Costa Rican colón","lang":"Spanish"},{"n":"Cuba","id":192,"a2":"cu","a3":"CUB","cap":"Havana","pop":11338138,"area":109884,"reg":"Americas","sub":"Caribbean","lat":21.5,"lng":-80,"bord":[],"alt":["CU","Republic of Cuba","República de Cuba"],"ll":false,"cur":"Cuban convertible peso","lang":"Spanish"},{"n":"Cyprus","id":196,"a2":"cy","a3":"CYP","cap":"Nicosia","pop":1189265,"area":9251,"reg":"Europe","sub":"Southern Europe","lat":35,"lng":33,"bord":[],"alt":["CY","Kýpros","Kıbrıs","Republic of Cyprus","Κυπριακή Δημοκρατία","Kıbrıs Cumhuriyeti"],"ll":false,"cur":"Euro","lang":"Greek"},{"n":"Czechia","id":203,"a2":"cz","a3":"CZE","cap":"Prague","pop":10629928,"area":78865,"reg":"Europe","sub":"Central Europe","lat":49.75,"lng":15.5,"bord":["AUT","DEU","POL","SVK"],"alt":["CZ","Česká republika","Česko"],"ll":true,"cur":"Czech koruna","lang":"Czech"},{"n":"Germany","id":276,"a2":"de","a3":"DEU","cap":"Berlin","pop":82905782,"area":357114,"reg":"Europe","sub":"Western Europe","lat":51,"lng":9,"bord":["AUT","BEL","CZE","DNK","FRA","LUX","NLD","POL","CHE"],"alt":["DE","Federal Republic of Germany","Bundesrepublik Deutschland"],"ll":false,"cur":"Euro","lang":"German"},{"n":"Djibouti","id":262,"a2":"dj","a3":"DJI","cap":"Djibouti","pop":958920,"area":23200,"reg":"Africa","sub":"Eastern Africa","lat":11.5,"lng":43,"bord":["ERI","ETH","SOM"],"alt":["DJ","Jabuuti","Gabuuti","Republic of Djibouti","République de Djibouti","Gabuutih Ummuuno","Jamhuuriyadda Jabuuti"],"ll":false,"cur":"Djiboutian franc","lang":"Arabic"},{"n":"Dominica","id":212,"a2":"dm","a3":"DMA","cap":"Roseau","pop":71625,"area":751,"reg":"Americas","sub":"Caribbean","lat":15.42,"lng":-61.33,"bord":[],"alt":["DM","Dominique","Wai‘tu kubuli","Commonwealth of Dominica"],"ll":false,"cur":"Eastern Caribbean dollar","lang":"English"},{"n":"Denmark","id":208,"a2":"dk","a3":"DNK","cap":"Copenhagen","pop":5793636,"area":43094,"reg":"Europe","sub":"Northern Europe","lat":56,"lng":10,"bord":["DEU"],"alt":["DK","Danmark","Kingdom of Denmark","Kongeriget Danmark"],"ll":false,"cur":"Danish krone","lang":"Danish"},{"n":"Dominican Republic","id":214,"a2":"do","a3":"DOM","cap":"Santo Domingo","pop":10627165,"area":48671,"reg":"Americas","sub":"Caribbean","lat":19,"lng":-70.67,"bord":["HTI"],"alt":["DO"],"ll":false,"cur":"Dominican peso","lang":"Spanish"},{"n":"Algeria","id":12,"a2":"dz","a3":"DZA","cap":"Algiers","pop":42228429,"area":2381741,"reg":"Africa","sub":"Northern Africa","lat":28,"lng":3,"bord":["TUN","LBY","NER","ESH","MRT","MLI","MAR"],"alt":["DZ","Dzayer","Algérie"],"ll":false,"cur":"Algerian dinar","lang":"Arabic"},{"n":"Ecuador","id":218,"a2":"ec","a3":"ECU","cap":"Quito","pop":17084357,"area":276841,"reg":"Americas","sub":"South America","lat":-2,"lng":-77.5,"bord":["COL","PER"],"alt":["EC","Republic of Ecuador","República del Ecuador"],"ll":false,"cur":"United States dollar","lang":"Spanish"},{"n":"Egypt","id":818,"a2":"eg","a3":"EGY","cap":"Cairo","pop":98423595,"area":1002450,"reg":"Africa","sub":"Northern Africa","lat":27,"lng":30,"bord":["ISR","LBY","PSE","SDN"],"alt":["EG","Arab Republic of Egypt"],"ll":false,"cur":"Egyptian pound","lang":"Arabic"},{"n":"Eritrea","id":232,"a2":"er","a3":"ERI","cap":"Asmara","pop":6213972,"area":117600,"reg":"Africa","sub":"Eastern Africa","lat":15,"lng":39,"bord":["DJI","ETH","SDN"],"alt":["ER","State of Eritrea","ሃገረ ኤርትራ","Dawlat Iritriyá","ʾErtrā","Iritriyā"],"ll":false,"cur":"Eritrean nakfa","lang":"Arabic"},{"n":"Spain","id":724,"a2":"es","a3":"ESP","cap":"Madrid","pop":46796540,"area":505992,"reg":"Europe","sub":"Southern Europe","lat":40,"lng":-4,"bord":["AND","FRA","GIB","PRT","MAR"],"alt":["ES","Kingdom of Spain","Reino de España"],"ll":false,"cur":"Euro","lang":"Spanish"},{"n":"Estonia","id":233,"a2":"ee","a3":"EST","cap":"Tallinn","pop":1321977,"area":45227,"reg":"Europe","sub":"Northern Europe","lat":59,"lng":26,"bord":["LVA","RUS"],"alt":["EE","Eesti","Republic of Estonia","Eesti Vabariik"],"ll":false,"cur":"Euro","lang":"Estonian"},{"n":"Ethiopia","id":231,"a2":"et","a3":"ETH","cap":"Addis Ababa","pop":109224559,"area":1104300,"reg":"Africa","sub":"Eastern Africa","lat":8,"lng":38,"bord":["DJI","ERI","KEN","SOM","SSD","SDN"],"alt":["ET","ʾĪtyōṗṗyā","Federal Democratic Republic of Ethiopia","የኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ"],"ll":true,"cur":"Ethiopian birr","lang":"Amharic"},{"n":"Finland","id":246,"a2":"fi","a3":"FIN","cap":"Helsinki","pop":5515525,"area":338424,"reg":"Europe","sub":"Northern Europe","lat":64,"lng":26,"bord":["NOR","SWE","RUS"],"alt":["FI","Suomi","Republic of Finland","Suomen tasavalta","Republiken Finland"],"ll":false,"cur":"Euro","lang":"Finnish"},{"n":"Fiji","id":242,"a2":"fj","a3":"FJI","cap":"Suva","pop":924610,"area":18272,"reg":"Oceania","sub":"Melanesia","lat":-18,"lng":175,"bord":[],"alt":["FJ","Viti","Republic of Fiji","Matanitu ko Viti","Fijī Gaṇarājya"],"ll":false,"cur":"Fijian dollar","lang":"English"},{"n":"France","id":250,"a2":"fr","a3":"FRA","cap":"Paris","pop":66977107,"area":551695,"reg":"Europe","sub":"Western Europe","lat":46,"lng":2,"bord":["AND","BEL","DEU","ITA","LUX","MCO","ESP","CHE"],"alt":["FR","French Republic","République française"],"ll":false,"cur":"Euro","lang":"French"},{"n":"Micronesia","id":583,"a2":"fm","a3":"FSM","cap":"Palikir","pop":112640,"area":702,"reg":"Oceania","sub":"Micronesia","lat":6.92,"lng":158.25,"bord":[],"alt":["FM","Federated States of Micronesia","Micronesia, Federated States of"],"ll":false,"cur":"United States dollar","lang":"English"},{"n":"Gabon","id":266,"a2":"ga","a3":"GAB","cap":"Libreville","pop":2119275,"area":267668,"reg":"Africa","sub":"Middle Africa","lat":-1,"lng":11.75,"bord":["CMR","COG","GNQ"],"alt":["GA","Gabonese Republic","République Gabonaise"],"ll":false,"cur":"Central African CFA franc","lang":"French"},{"n":"United Kingdom","id":826,"a2":"gb","a3":"GBR","cap":"London","pop":66460344,"area":242900,"reg":"Europe","sub":"Northern Europe","lat":54,"lng":-2,"bord":["IRL"],"alt":["GB","UK","Great Britain"],"ll":false,"cur":"British pound","lang":"English"},{"n":"Georgia","id":268,"a2":"ge","a3":"GEO","cap":"Tbilisi","pop":3726549,"area":69700,"reg":"Asia","sub":"Western Asia","lat":42,"lng":43.5,"bord":["ARM","AZE","RUS","TUR"],"alt":["GE","Sakartvelo"],"ll":false,"cur":"lari","lang":"Georgian"},{"n":"Ghana","id":288,"a2":"gh","a3":"GHA","cap":"Accra","pop":29767108,"area":238533,"reg":"Africa","sub":"Western Africa","lat":8,"lng":-2,"bord":["BFA","CIV","TGO"],"alt":["GH"],"ll":false,"cur":"Ghanaian cedi","lang":"English"},{"n":"Guinea","id":324,"a2":"gn","a3":"GIN","cap":"Conakry","pop":12414318,"area":245857,"reg":"Africa","sub":"Western Africa","lat":11,"lng":-10,"bord":["CIV","GNB","LBR","MLI","SEN","SLE"],"alt":["GN","Republic of Guinea","République de Guinée"],"ll":false,"cur":"Guinean franc","lang":"French"},{"n":"Gambia","id":270,"a2":"gm","a3":"GMB","cap":"Banjul","pop":2280102,"area":10689,"reg":"Africa","sub":"Western Africa","lat":13.47,"lng":-16.57,"bord":["SEN"],"alt":["GM","Republic of the Gambia"],"ll":false,"cur":"dalasi","lang":"English"},{"n":"Guinea-Bissau","id":624,"a2":"gw","a3":"GNB","cap":"Bissau","pop":1874309,"area":36125,"reg":"Africa","sub":"Western Africa","lat":12,"lng":-15,"bord":["GIN","SEN"],"alt":["GW","Republic of Guinea-Bissau","República da Guiné-Bissau"],"ll":false,"cur":"West African CFA franc","lang":"Portuguese"},{"n":"Equatorial Guinea","id":226,"a2":"gq","a3":"GNQ","cap":"Malabo","pop":1308974,"area":28051,"reg":"Africa","sub":"Middle Africa","lat":2,"lng":10,"bord":["CMR","GAB"],"alt":["GQ","Republic of Equatorial Guinea","República de Guinea Ecuatorial","République de Guinée équatoriale","República da Guiné Equatorial"],"ll":false,"cur":"Central African CFA franc","lang":"French"},{"n":"Greece","id":300,"a2":"gr","a3":"GRC","cap":"Athens","pop":10731726,"area":131990,"reg":"Europe","sub":"Southern Europe","lat":39,"lng":22,"bord":["ALB","BGR","TUR","MKD"],"alt":["GR","Elláda","Hellenic Republic","Ελληνική Δημοκρατία"],"ll":false,"cur":"Euro","lang":"Greek"},{"n":"Grenada","id":308,"a2":"gd","a3":"GRD","cap":"St. George\u0027s","pop":111454,"area":344,"reg":"Americas","sub":"Caribbean","lat":12.12,"lng":-61.67,"bord":[],"alt":["GD"],"ll":false,"cur":"Eastern Caribbean dollar","lang":"English"},{"n":"Guatemala","id":320,"a2":"gt","a3":"GTM","cap":"Guatemala City","pop":17247807,"area":108889,"reg":"Americas","sub":"Central America","lat":15.5,"lng":-90.25,"bord":["BLZ","SLV","HND","MEX"],"alt":["GT"],"ll":false,"cur":"Guatemalan quetzal","lang":"Spanish"},{"n":"Guyana","id":328,"a2":"gy","a3":"GUY","cap":"Georgetown","pop":779004,"area":214969,"reg":"Americas","sub":"South America","lat":5,"lng":-59,"bord":["BRA","SUR","VEN"],"alt":["GY","Co-operative Republic of Guyana"],"ll":false,"cur":"Guyanese dollar","lang":"English"},{"n":"Honduras","id":340,"a2":"hn","a3":"HND","cap":"Tegucigalpa","pop":9587522,"area":112492,"reg":"Americas","sub":"Central America","lat":15,"lng":-86.5,"bord":["GTM","SLV","NIC"],"alt":["HN","Republic of Honduras","República de Honduras"],"ll":false,"cur":"Honduran lempira","lang":"Spanish"},{"n":"Croatia","id":191,"a2":"hr","a3":"HRV","cap":"Zagreb","pop":4087843,"area":56594,"reg":"Europe","sub":"Southeast Europe","lat":45.17,"lng":15.5,"bord":["BIH","HUN","MNE","SRB","SVN"],"alt":["HR","Hrvatska","Republic of Croatia","Republika Hrvatska"],"ll":false,"cur":"Euro","lang":"Croatian"},{"n":"Haiti","id":332,"a2":"ht","a3":"HTI","cap":"Port-au-Prince","pop":11123176,"area":27750,"reg":"Americas","sub":"Caribbean","lat":19,"lng":-72.42,"bord":["DOM"],"alt":["HT","Republic of Haiti","République d\u0027Haïti","Repiblik Ayiti"],"ll":false,"cur":"Haitian gourde","lang":"French"},{"n":"Hungary","id":348,"a2":"hu","a3":"HUN","cap":"Budapest","pop":9775564,"area":93028,"reg":"Europe","sub":"Central Europe","lat":47,"lng":20,"bord":["AUT","HRV","ROU","SRB","SVK","SVN","UKR"],"alt":["HU"],"ll":true,"cur":"Hungarian forint","lang":"Hungarian"},{"n":"Indonesia","id":360,"a2":"id","a3":"IDN","cap":"Jakarta","pop":267663435,"area":1904569,"reg":"Asia","sub":"South-Eastern Asia","lat":-5,"lng":120,"bord":["TLS","MYS","PNG"],"alt":["ID","Republic of Indonesia","Republik Indonesia"],"ll":false,"cur":"Indonesian rupiah","lang":"Indonesian"},{"n":"India","id":356,"a2":"in","a3":"IND","cap":"New Delhi","pop":1352617328,"area":3287590,"reg":"Asia","sub":"Southern Asia","lat":20,"lng":77,"bord":["BGD","BTN","MMR","CHN","NPL","PAK"],"alt":["IN","Bhārat","Republic of India","Bharat Ganrajya","இந்தியா"],"ll":false,"cur":"Indian rupee","lang":"English"},{"n":"Ireland","id":372,"a2":"ie","a3":"IRL","cap":"Dublin","pop":4867309,"area":70273,"reg":"Europe","sub":"Northern Europe","lat":53,"lng":-8,"bord":["GBR"],"alt":["IE","Éire","Republic of Ireland","Poblacht na hÉireann"],"ll":false,"cur":"Euro","lang":"English"},{"n":"Iran","id":364,"a2":"ir","a3":"IRN","cap":"Tehran","pop":81800269,"area":1648195,"reg":"Asia","sub":"Southern Asia","lat":32,"lng":53,"bord":["AFG","ARM","AZE","IRQ","PAK","TUR","TKM"],"alt":["IR","Islamic Republic of Iran","Iran, Islamic Republic of","Jomhuri-ye Eslāmi-ye Irān"],"ll":false,"cur":"Iranian rial","lang":"Persian (Farsi)"},{"n":"Iraq","id":368,"a2":"iq","a3":"IRQ","cap":"Baghdad","pop":38433600,"area":438317,"reg":"Asia","sub":"Western Asia","lat":33,"lng":44,"bord":["IRN","JOR","KWT","SAU","SYR","TUR"],"alt":["IQ","Republic of Iraq","Jumhūriyyat al-‘Irāq"],"ll":false,"cur":"Iraqi dinar","lang":"Arabic"},{"n":"Iceland","id":352,"a2":"is","a3":"ISL","cap":"Reykjavik","pop":352721,"area":103000,"reg":"Europe","sub":"Northern Europe","lat":65,"lng":-18,"bord":[],"alt":["IS","Island","Republic of Iceland","Lýðveldið Ísland"],"ll":false,"cur":"Icelandic króna","lang":"Icelandic"},{"n":"Israel","id":376,"a2":"il","a3":"ISR","cap":"Jerusalem","pop":8882800,"area":20770,"reg":"Asia","sub":"Western Asia","lat":31.47,"lng":35.13,"bord":["EGY","JOR","LBN","PSE","SYR"],"alt":["IL","State of Israel","Medīnat Yisrā\u0027el"],"ll":false,"cur":"Israeli new shekel","lang":"Arabic"},{"n":"Italy","id":380,"a2":"it","a3":"ITA","cap":"Rome","pop":60421760,"area":301336,"reg":"Europe","sub":"Southern Europe","lat":42.83,"lng":12.83,"bord":["AUT","FRA","SMR","SVN","CHE","VAT"],"alt":["IT","Italian Republic","Repubblica italiana"],"ll":false,"cur":"Euro","lang":"Italian"},{"n":"Jamaica","id":388,"a2":"jm","a3":"JAM","cap":"Kingston","pop":2934855,"area":10991,"reg":"Americas","sub":"Caribbean","lat":18.25,"lng":-77.5,"bord":[],"alt":["JM"],"ll":false,"cur":"Jamaican dollar","lang":"English"},{"n":"Jordan","id":400,"a2":"jo","a3":"JOR","cap":"Amman","pop":9956011,"area":89342,"reg":"Asia","sub":"Western Asia","lat":31,"lng":36,"bord":["IRQ","ISR","PSE","SAU","SYR"],"alt":["JO","Hashemite Kingdom of Jordan","al-Mamlakah al-Urdunīyah al-Hāshimīyah"],"ll":false,"cur":"Jordanian dinar","lang":"Arabic"},{"n":"Japan","id":392,"a2":"jp","a3":"JPN","cap":"Tokyo","pop":126529100,"area":377930,"reg":"Asia","sub":"Eastern Asia","lat":36,"lng":138,"bord":[],"alt":["JP","Nippon","Nihon"],"ll":false,"cur":"Japanese yen","lang":"Japanese"},{"n":"Kazakhstan","id":398,"a2":"kz","a3":"KAZ","cap":"Astana","pop":18272430,"area":2724900,"reg":"Asia","sub":"Central Asia","lat":48,"lng":68,"bord":["CHN","KGZ","RUS","TKM","UZB"],"alt":["KZ","Qazaqstan","Казахстан","Republic of Kazakhstan","Қазақстан Республикасы","Qazaqstan Respublïkası","Республика Казахстан","Respublika Kazakhstan"],"ll":true,"cur":"Kazakhstani tenge","lang":"Kazakh"},{"n":"Kenya","id":404,"a2":"ke","a3":"KEN","cap":"Nairobi","pop":51393010,"area":580367,"reg":"Africa","sub":"Eastern Africa","lat":1,"lng":38,"bord":["ETH","SOM","SSD","TZA","UGA"],"alt":["KE","Republic of Kenya","Jamhuri ya Kenya"],"ll":false,"cur":"Kenyan shilling","lang":"English"},{"n":"Kyrgyzstan","id":417,"a2":"kg","a3":"KGZ","cap":"Bishkek","pop":6322800,"area":199951,"reg":"Asia","sub":"Central Asia","lat":41,"lng":75,"bord":["CHN","KAZ","TJK","UZB"],"alt":["KG","Киргизия","Kyrgyz Republic","Кыргыз Республикасы","Kyrgyz Respublikasy"],"ll":true,"cur":"Kyrgyzstani som","lang":"Kyrgyz"},{"n":"Cambodia","id":116,"a2":"kh","a3":"KHM","cap":"Phnom Penh","pop":16249798,"area":181035,"reg":"Asia","sub":"South-Eastern Asia","lat":13,"lng":105,"bord":["LAO","THA","VNM"],"alt":["KH","Kingdom of Cambodia"],"ll":false,"cur":"Cambodian riel","lang":"Khmer"},{"n":"Kiribati","id":296,"a2":"ki","a3":"KIR","cap":"South Tarawa","pop":115847,"area":811,"reg":"Oceania","sub":"Micronesia","lat":1.42,"lng":173,"bord":[],"alt":["KI","Republic of Kiribati","Ribaberiki Kiribati"],"ll":false,"cur":"Australian dollar","lang":"English"},{"n":"Saint Kitts and Nevis","id":659,"a2":"kn","a3":"KNA","cap":"Basseterre","pop":52441,"area":261,"reg":"Americas","sub":"Caribbean","lat":17.33,"lng":-62.75,"bord":[],"alt":["KN","Federation of Saint Christopher and Nevis"],"ll":false,"cur":"Eastern Caribbean dollar","lang":"English"},{"n":"South Korea","id":410,"a2":"kr","a3":"KOR","cap":"Seoul","pop":51606633,"area":100210,"reg":"Asia","sub":"Eastern Asia","lat":37,"lng":127.5,"bord":["PRK"],"alt":["KR","Korea, Republic of","Republic of Korea","남한","남조선"],"ll":false,"cur":"South Korean won","lang":"Korean"},{"n":"Kuwait","id":414,"a2":"kw","a3":"KWT","cap":"Kuwait City","pop":4137309,"area":17818,"reg":"Asia","sub":"Western Asia","lat":29.5,"lng":45.75,"bord":["IRQ","SAU"],"alt":["KW","State of Kuwait","Dawlat al-Kuwait"],"ll":false,"cur":"Kuwaiti dinar","lang":"Arabic"},{"n":"Laos","id":418,"a2":"la","a3":"LAO","cap":"Vientiane","pop":7061507,"area":236800,"reg":"Asia","sub":"South-Eastern Asia","lat":18,"lng":105,"bord":["MMR","KHM","CHN","THA","VNM"],"alt":["LA","Lao","Lao People\u0027s Democratic Republic","Sathalanalat Paxathipatai Paxaxon Lao"],"ll":true,"cur":"Lao kip","lang":"Lao"},{"n":"Lebanon","id":422,"a2":"lb","a3":"LBN","cap":"Beirut","pop":6848925,"area":10452,"reg":"Asia","sub":"Western Asia","lat":33.83,"lng":35.83,"bord":["ISR","SYR"],"alt":["LB","Lebanese Republic","Al-Jumhūrīyah Al-Libnānīyah"],"ll":false,"cur":"Lebanese pound","lang":"Arabic"},{"n":"Liberia","id":430,"a2":"lr","a3":"LBR","cap":"Monrovia","pop":4818977,"area":111369,"reg":"Africa","sub":"Western Africa","lat":6.5,"lng":-9.5,"bord":["GIN","CIV","SLE"],"alt":["LR","Republic of Liberia"],"ll":false,"cur":"Liberian dollar","lang":"English"},{"n":"Libya","id":434,"a2":"ly","a3":"LBY","cap":"Tripoli","pop":6678567,"area":1759540,"reg":"Africa","sub":"Northern Africa","lat":25,"lng":17,"bord":["DZA","TCD","EGY","NER","SDN","TUN"],"alt":["LY","State of Libya","Dawlat Libya"],"ll":false,"cur":"Libyan dinar","lang":"Arabic"},{"n":"Saint Lucia","id":662,"a2":"lc","a3":"LCA","cap":"Castries","pop":181889,"area":616,"reg":"Americas","sub":"Caribbean","lat":13.88,"lng":-60.97,"bord":[],"alt":["LC"],"ll":false,"cur":"Eastern Caribbean dollar","lang":"English"},{"n":"Liechtenstein","id":438,"a2":"li","a3":"LIE","cap":"Vaduz","pop":37910,"area":160,"reg":"Europe","sub":"Western Europe","lat":47.27,"lng":9.53,"bord":["AUT","CHE"],"alt":["LI","Principality of Liechtenstein","Fürstentum Liechtenstein"],"ll":true,"cur":"Swiss franc","lang":"German"},{"n":"Sri Lanka","id":144,"a2":"lk","a3":"LKA","cap":"Colombo","pop":21670000,"area":65610,"reg":"Asia","sub":"Southern Asia","lat":7,"lng":81,"bord":["IND"],"alt":["LK","ilaṅkai","Democratic Socialist Republic of Sri Lanka"],"ll":false,"cur":"Sri Lankan rupee","lang":"Sinhala"},{"n":"Lesotho","id":426,"a2":"ls","a3":"LSO","cap":"Maseru","pop":2108132,"area":30355,"reg":"Africa","sub":"Southern Africa","lat":-29.5,"lng":28.5,"bord":["ZAF"],"alt":["LS","Kingdom of Lesotho","Muso oa Lesotho"],"ll":true,"cur":"Lesotho loti","lang":"English"},{"n":"Lithuania","id":440,"a2":"lt","a3":"LTU","cap":"Vilnius","pop":2801543,"area":65300,"reg":"Europe","sub":"Northern Europe","lat":56,"lng":24,"bord":["BLR","LVA","POL","RUS"],"alt":["LT","Republic of Lithuania","Lietuvos Respublika"],"ll":false,"cur":"Euro","lang":"Lithuanian"},{"n":"Luxembourg","id":442,"a2":"lu","a3":"LUX","cap":"Luxembourg","pop":607950,"area":2586,"reg":"Europe","sub":"Western Europe","lat":49.75,"lng":6.17,"bord":["BEL","FRA","DEU"],"alt":["LU","Grand Duchy of Luxembourg","Grand-Duché de Luxembourg","Großherzogtum Luxemburg","Groussherzogtum Lëtzebuerg"],"ll":true,"cur":"Euro","lang":"German"},{"n":"Latvia","id":428,"a2":"lv","a3":"LVA","cap":"Riga","pop":1927174,"area":64559,"reg":"Europe","sub":"Northern Europe","lat":57,"lng":25,"bord":["BLR","EST","LTU","RUS"],"alt":["LV","Republic of Latvia","Latvijas Republika"],"ll":false,"cur":"Euro","lang":"Latvian"},{"n":"Morocco","id":504,"a2":"ma","a3":"MAR","cap":"Rabat","pop":36029138,"area":446550,"reg":"Africa","sub":"Northern Africa","lat":32,"lng":-5,"bord":["DZA","ESH","ESP"],"alt":["MA","Kingdom of Morocco","Al-Mamlakah al-Maġribiyah"],"ll":false,"cur":"Moroccan dirham","lang":"Arabic"},{"n":"Monaco","id":492,"a2":"mc","a3":"MCO","cap":"Monaco","pop":38682,"area":2.02,"reg":"Europe","sub":"Western Europe","lat":43.73,"lng":7.4,"bord":["FRA"],"alt":["MC","Principality of Monaco","Principauté de Monaco"],"ll":false,"cur":"Euro","lang":"French"},{"n":"Moldova","id":498,"a2":"md","a3":"MDA","cap":"Chișinău","pop":2706049,"area":33846,"reg":"Europe","sub":"Eastern Europe","lat":47,"lng":29,"bord":["ROU","UKR"],"alt":["MD","Moldova, Republic of","Republic of Moldova","Republica Moldova"],"ll":true,"cur":"Moldovan leu","lang":"Moldavian"},{"n":"Madagascar","id":450,"a2":"mg","a3":"MDG","cap":"Antananarivo","pop":26262368,"area":587041,"reg":"Africa","sub":"Eastern Africa","lat":-20,"lng":47,"bord":[],"alt":["MG","Republic of Madagascar","Repoblikan\u0027i Madagasikara","République de Madagascar"],"ll":false,"cur":"Malagasy ariary","lang":"French"},{"n":"Maldives","id":462,"a2":"mv","a3":"MDV","cap":"Malé","pop":515696,"area":300,"reg":"Asia","sub":"Southern Asia","lat":3.25,"lng":73,"bord":[],"alt":["MV","Maldive Islands","Republic of the Maldives","Dhivehi Raajjeyge Jumhooriyya"],"ll":false,"cur":"Maldivian rufiyaa","lang":"Maldivian"},{"n":"Mexico","id":484,"a2":"mx","a3":"MEX","cap":"Mexico City","pop":126190788,"area":1964375,"reg":"Americas","sub":"North America","lat":23,"lng":-102,"bord":["BLZ","GTM","USA"],"alt":["MX","Mexicanos","United Mexican States","Estados Unidos Mexicanos"],"ll":false,"cur":"Mexican peso","lang":"Spanish"},{"n":"Marshall Islands","id":584,"a2":"mh","a3":"MHL","cap":"Majuro","pop":58413,"area":181,"reg":"Oceania","sub":"Micronesia","lat":9,"lng":168,"bord":[],"alt":["MH","Republic of the Marshall Islands","Aolepān Aorōkin M̧ajeļ"],"ll":false,"cur":"United States dollar","lang":"English"},{"n":"North Macedonia","id":807,"a2":"mk","a3":"MKD","cap":"Skopje","pop":2084367,"area":25713,"reg":"Europe","sub":"Southeast Europe","lat":41.83,"lng":22,"bord":["ALB","BGR","GRC","UNK","SRB"],"alt":["MK","The former Yugoslav Republic of Macedonia","Republic of North Macedonia","Macedonia, The Former Yugoslav Republic of","Република Северна Македонија","Macedonia"],"ll":true,"cur":"denar","lang":"Macedonian"},{"n":"Mali","id":466,"a2":"ml","a3":"MLI","cap":"Bamako","pop":19077690,"area":1240192,"reg":"Africa","sub":"Western Africa","lat":17,"lng":-4,"bord":["DZA","BFA","GIN","CIV","MRT","NER","SEN"],"alt":["ML","Republic of Mali","République du Mali"],"ll":true,"cur":"West African CFA franc","lang":"French"},{"n":"Malta","id":470,"a2":"mt","a3":"MLT","cap":"Valletta","pop":484630,"area":316,"reg":"Europe","sub":"Southern Europe","lat":35.83,"lng":14.58,"bord":[],"alt":["MT","Republic of Malta","Repubblika ta\u0027 Malta"],"ll":false,"cur":"Euro","lang":"English"},{"n":"Myanmar","id":104,"a2":"mm","a3":"MMR","cap":"Naypyidaw","pop":53708395,"area":676578,"reg":"Asia","sub":"South-Eastern Asia","lat":22,"lng":98,"bord":["BGD","CHN","IND","LAO","THA"],"alt":["MM","Burma","Republic of the Union of Myanmar","Pyidaunzu Thanmăda Myăma Nainngandaw"],"ll":false,"cur":"Burmese kyat","lang":"Burmese"},{"n":"Montenegro","id":499,"a2":"me","a3":"MNE","cap":"Podgorica","pop":631219,"area":13812,"reg":"Europe","sub":"Southeast Europe","lat":42.5,"lng":19.3,"bord":["ALB","BIH","HRV","UNK","SRB"],"alt":["ME","Crna Gora"],"ll":false,"cur":"Euro","lang":"Montenegrin"},{"n":"Mongolia","id":496,"a2":"mn","a3":"MNG","cap":"Ulan Bator","pop":3170208,"area":1564110,"reg":"Asia","sub":"Eastern Asia","lat":46,"lng":105,"bord":["CHN","RUS"],"alt":["MN"],"ll":true,"cur":"Mongolian tögrög","lang":"Mongolian"},{"n":"Mozambique","id":508,"a2":"mz","a3":"MOZ","cap":"Maputo","pop":29495962,"area":801590,"reg":"Africa","sub":"Eastern Africa","lat":-18.25,"lng":35,"bord":["MWI","ZAF","SWZ","TZA","ZMB","ZWE"],"alt":["MZ","Republic of Mozambique","República de Moçambique"],"ll":false,"cur":"Mozambican metical","lang":"Portuguese"},{"n":"Mauritania","id":478,"a2":"mr","a3":"MRT","cap":"Nouakchott","pop":4403319,"area":1030700,"reg":"Africa","sub":"Western Africa","lat":20,"lng":-12,"bord":["DZA","MLI","SEN","ESH"],"alt":["MR","Islamic Republic of Mauritania","al-Jumhūriyyah al-ʾIslāmiyyah al-Mūrītāniyyah"],"ll":false,"cur":"Mauritanian ouguiya","lang":"Arabic"},{"n":"Mauritius","id":480,"a2":"mu","a3":"MUS","cap":"Port Louis","pop":1265303,"area":2040,"reg":"Africa","sub":"Eastern Africa","lat":-20.28,"lng":57.55,"bord":[],"alt":["MU","Republic of Mauritius","République de Maurice"],"ll":false,"cur":"Mauritian rupee","lang":"English"},{"n":"Malawi","id":454,"a2":"mw","a3":"MWI","cap":"Lilongwe","pop":18143315,"area":118484,"reg":"Africa","sub":"Eastern Africa","lat":-13.5,"lng":34,"bord":["MOZ","TZA","ZMB"],"alt":["MW","Republic of Malawi"],"ll":true,"cur":"Malawian kwacha","lang":"English"},{"n":"Malaysia","id":458,"a2":"my","a3":"MYS","cap":"Kuala Lumpur","pop":31528585,"area":330803,"reg":"Asia","sub":"South-Eastern Asia","lat":2.5,"lng":112.5,"bord":["BRN","IDN","THA"],"alt":["MY"],"ll":false,"cur":"Malaysian ringgit","lang":"English"},{"n":"Namibia","id":516,"a2":"na","a3":"NAM","cap":"Windhoek","pop":2448255,"area":825615,"reg":"Africa","sub":"Southern Africa","lat":-22,"lng":17,"bord":["AGO","BWA","ZAF","ZMB"],"alt":["NA","Namibië","Republic of Namibia"],"ll":false,"cur":"Namibian dollar","lang":"Afrikaans"},{"n":"Niger","id":562,"a2":"ne","a3":"NER","cap":"Niamey","pop":22442948,"area":1267000,"reg":"Africa","sub":"Western Africa","lat":16,"lng":8,"bord":["DZA","BEN","BFA","TCD","LBY","MLI","NGA"],"alt":["NE","Nijar"],"ll":true,"cur":"West African CFA franc","lang":"French"},{"n":"Nigeria","id":566,"a2":"ng","a3":"NGA","cap":"Abuja","pop":195874740,"area":923768,"reg":"Africa","sub":"Western Africa","lat":10,"lng":8,"bord":["BEN","CMR","TCD","NER"],"alt":["NG","Nijeriya","Naíjíríà","Federal Republic of Nigeria"],"ll":false,"cur":"Nigerian naira","lang":"English"},{"n":"Nicaragua","id":558,"a2":"ni","a3":"NIC","cap":"Managua","pop":6465513,"area":130373,"reg":"Americas","sub":"Central America","lat":13,"lng":-85,"bord":["CRI","HND"],"alt":["NI","Republic of Nicaragua","República de Nicaragua"],"ll":false,"cur":"Nicaraguan córdoba","lang":"Spanish"},{"n":"Netherlands","id":528,"a2":"nl","a3":"NLD","cap":"Amsterdam","pop":17231624,"area":41850,"reg":"Europe","sub":"Western Europe","lat":52.5,"lng":5.75,"bord":["BEL","DEU"],"alt":["NL","Holland","Nederland","The Netherlands"],"ll":false,"cur":"Euro","lang":"Dutch"},{"n":"Norway","id":578,"a2":"no","a3":"NOR","cap":"Oslo","pop":5311916,"area":323802,"reg":"Europe","sub":"Northern Europe","lat":62,"lng":10,"bord":["FIN","SWE","RUS"],"alt":["NO","Norge","Noreg","Kingdom of Norway","Kongeriket Norge","Kongeriket Noreg"],"ll":false,"cur":"Norwegian krone","lang":"Norwegian Nynorsk"},{"n":"Nepal","id":524,"a2":"np","a3":"NPL","cap":"Kathmandu","pop":28087871,"area":147181,"reg":"Asia","sub":"Southern Asia","lat":28,"lng":84,"bord":["CHN","IND"],"alt":["NP","Federal Democratic Republic of Nepal","Loktāntrik Ganatantra Nepāl"],"ll":true,"cur":"Nepalese rupee","lang":"Nepali"},{"n":"Nauru","id":520,"a2":"nr","a3":"NRU","cap":"Yaren","pop":12704,"area":21,"reg":"Oceania","sub":"Micronesia","lat":-0.53,"lng":166.92,"bord":[],"alt":["NR","Naoero","Pleasant Island","Republic of Nauru","Ripublik Naoero"],"ll":false,"cur":"Australian dollar","lang":"English"},{"n":"New Zealand","id":554,"a2":"nz","a3":"NZL","cap":"Wellington","pop":4841000,"area":270467,"reg":"Oceania","sub":"Australia and New Zealand","lat":-41,"lng":174,"bord":[],"alt":["NZ","Aotearoa"],"ll":false,"cur":"New Zealand dollar","lang":"English"},{"n":"Oman","id":512,"a2":"om","a3":"OMN","cap":"Muscat","pop":4829483,"area":309500,"reg":"Asia","sub":"Western Asia","lat":21,"lng":57,"bord":["SAU","ARE","YEM"],"alt":["OM","Sultanate of Oman","Salṭanat ʻUmān"],"ll":false,"cur":"Omani rial","lang":"Arabic"},{"n":"Pakistan","id":586,"a2":"pk","a3":"PAK","cap":"Islamabad","pop":212215030,"area":881912,"reg":"Asia","sub":"Southern Asia","lat":30,"lng":70,"bord":["AFG","CHN","IND","IRN"],"alt":["PK","Pākistān","Islamic Republic of Pakistan","Islāmī Jumhūriya\u0027eh Pākistān"],"ll":false,"cur":"Pakistani rupee","lang":"English"},{"n":"Panama","id":591,"a2":"pa","a3":"PAN","cap":"Panama City","pop":4176873,"area":75417,"reg":"Americas","sub":"Central America","lat":9,"lng":-80,"bord":["COL","CRI"],"alt":["PA","Republic of Panama","República de Panamá"],"ll":false,"cur":"Panamanian balboa","lang":"Spanish"},{"n":"Peru","id":604,"a2":"pe","a3":"PER","cap":"Lima","pop":31989256,"area":1285216,"reg":"Americas","sub":"South America","lat":-10,"lng":-76,"bord":["BOL","BRA","CHL","COL","ECU"],"alt":["PE","Republic of Peru","República del Perú"],"ll":false,"cur":"Peruvian sol","lang":"Aymara"},{"n":"Philippines","id":608,"a2":"ph","a3":"PHL","cap":"Manila","pop":106651922,"area":342353,"reg":"Asia","sub":"South-Eastern Asia","lat":13,"lng":122,"bord":[],"alt":["PH","Republic of the Philippines","Repúblika ng Pilipinas"],"ll":false,"cur":"Philippine peso","lang":"English"},{"n":"Palau","id":585,"a2":"pw","a3":"PLW","cap":"Ngerulmud","pop":17907,"area":459,"reg":"Oceania","sub":"Micronesia","lat":7.5,"lng":134.5,"bord":[],"alt":["PW","Republic of Palau","Beluu er a Belau"],"ll":false,"cur":"United States dollar","lang":"English"},{"n":"Papua New Guinea","id":598,"a2":"pg","a3":"PNG","cap":"Port Moresby","pop":8606316,"area":462840,"reg":"Oceania","sub":"Melanesia","lat":-6,"lng":147,"bord":["IDN"],"alt":["PG","Independent State of Papua New Guinea","Independen Stet bilong Papua Niugini"],"ll":false,"cur":"Papua New Guinean kina","lang":"English"},{"n":"Poland","id":616,"a2":"pl","a3":"POL","cap":"Warsaw","pop":37974750,"area":312679,"reg":"Europe","sub":"Central Europe","lat":52,"lng":20,"bord":["BLR","CZE","DEU","LTU","RUS","SVK","UKR"],"alt":["PL","Republic of Poland","Rzeczpospolita Polska"],"ll":false,"cur":"Polish złoty","lang":"Polish"},{"n":"North Korea","id":408,"a2":"kp","a3":"PRK","cap":"Pyongyang","pop":25549819,"area":120538,"reg":"Asia","sub":"Eastern Asia","lat":40,"lng":127,"bord":["CHN","KOR","RUS"],"alt":["KP","Democratic People\u0027s Republic of Korea","DPRK","조선민주주의인민공화국","Chosŏn Minjujuŭi Inmin Konghwaguk","Korea, Democratic People\u0027s Republic of","북한","북조선"],"ll":false,"cur":"North Korean won","lang":"Korean"},{"n":"Portugal","id":620,"a2":"pt","a3":"PRT","cap":"Lisbon","pop":10283822,"area":92090,"reg":"Europe","sub":"Southern Europe","lat":39.5,"lng":-8,"bord":["ESP"],"alt":["PT","Portuguesa","Portuguese Republic","República Portuguesa"],"ll":false,"cur":"Euro","lang":"Portuguese"},{"n":"Paraguay","id":600,"a2":"py","a3":"PRY","cap":"Asunción","pop":6956071,"area":406752,"reg":"Americas","sub":"South America","lat":-23,"lng":-58,"bord":["ARG","BOL","BRA"],"alt":["PY","Republic of Paraguay","República del Paraguay","Tetã Paraguái"],"ll":true,"cur":"Paraguayan guaraní","lang":"Guaraní"},{"n":"Qatar","id":634,"a2":"qa","a3":"QAT","cap":"Doha","pop":2781677,"area":11586,"reg":"Asia","sub":"Western Asia","lat":25.5,"lng":51.25,"bord":["SAU"],"alt":["QA","State of Qatar","Dawlat Qaṭar"],"ll":false,"cur":"Qatari riyal","lang":"Arabic"},{"n":"Romania","id":642,"a2":"ro","a3":"ROU","cap":"Bucharest","pop":19466145,"area":238391,"reg":"Europe","sub":"Southeast Europe","lat":46,"lng":25,"bord":["BGR","HUN","MDA","SRB","UKR"],"alt":["RO","Rumania","Roumania","România"],"ll":false,"cur":"Romanian leu","lang":"Romanian"},{"n":"Russia","id":643,"a2":"ru","a3":"RUS","cap":"Moscow","pop":144478050,"area":17098242,"reg":"Europe","sub":"Eastern Europe","lat":60,"lng":100,"bord":["AZE","BLR","CHN","EST","FIN","GEO","KAZ","PRK","LVA","LTU","MNG","NOR","POL","UKR"],"alt":["RU","Russian Federation","Российская Федерация"],"ll":false,"cur":"Russian ruble","lang":"Russian"},{"n":"Rwanda","id":646,"a2":"rw","a3":"RWA","cap":"Kigali","pop":12301939,"area":26338,"reg":"Africa","sub":"Eastern Africa","lat":-2,"lng":30,"bord":["BDI","COD","TZA","UGA"],"alt":["RW","Republic of Rwanda","Repubulika y\u0027u Rwanda","République du Rwanda"],"ll":true,"cur":"Rwandan franc","lang":"English"},{"n":"Saudi Arabia","id":682,"a2":"sa","a3":"SAU","cap":"Riyadh","pop":33699947,"area":2149690,"reg":"Asia","sub":"Western Asia","lat":25,"lng":45,"bord":["IRQ","JOR","KWT","OMN","QAT","ARE","YEM"],"alt":["Saudi","SA","Kingdom of Saudi Arabia","Al-Mamlakah al-‘Arabiyyah as-Su‘ūdiyyah"],"ll":false,"cur":"Saudi riyal","lang":"Arabic"},{"n":"Sudan","id":729,"a2":"sd","a3":"SDN","cap":"Khartoum","pop":41801533,"area":1886068,"reg":"Africa","sub":"Northern Africa","lat":15,"lng":30,"bord":["CAF","TCD","EGY","ERI","ETH","LBY","SSD"],"alt":["SD","Republic of the Sudan","Jumhūrīyat as-Sūdān"],"ll":false,"cur":"Sudanese pound","lang":"Arabic"},{"n":"Senegal","id":686,"a2":"sn","a3":"SEN","cap":"Dakar","pop":15854360,"area":196722,"reg":"Africa","sub":"Western Africa","lat":14,"lng":-14,"bord":["GMB","GIN","GNB","MLI","MRT"],"alt":["SN","Republic of Senegal","République du Sénégal"],"ll":false,"cur":"West African CFA franc","lang":"French"},{"n":"Singapore","id":702,"a2":"sg","a3":"SGP","cap":"Singapore","pop":5638676,"area":710,"reg":"Asia","sub":"South-Eastern Asia","lat":1.37,"lng":103.8,"bord":[],"alt":["SG","Singapura","Republik Singapura","新加坡共和国"],"ll":false,"cur":"Singapore dollar","lang":"English"},{"n":"Solomon Islands","id":90,"a2":"sb","a3":"SLB","cap":"Honiara","pop":652858,"area":28896,"reg":"Oceania","sub":"Melanesia","lat":-8,"lng":159,"bord":[],"alt":["SB"],"ll":false,"cur":"Solomon Islands dollar","lang":"English"},{"n":"Sierra Leone","id":694,"a2":"sl","a3":"SLE","cap":"Freetown","pop":7650154,"area":71740,"reg":"Africa","sub":"Western Africa","lat":8.5,"lng":-11.5,"bord":["GIN","LBR"],"alt":["SL","Republic of Sierra Leone"],"ll":false,"cur":"Sierra Leonean leone","lang":"English"},{"n":"El Salvador","id":222,"a2":"sv","a3":"SLV","cap":"San Salvador","pop":6420744,"area":21041,"reg":"Americas","sub":"Central America","lat":13.83,"lng":-88.92,"bord":["GTM","HND"],"alt":["SV","Republic of El Salvador","República de El Salvador"],"ll":false,"cur":"United States dollar","lang":"Spanish"},{"n":"San Marino","id":674,"a2":"sm","a3":"SMR","cap":"City of San Marino","pop":33785,"area":61,"reg":"Europe","sub":"Southern Europe","lat":43.77,"lng":12.42,"bord":["ITA"],"alt":["SM","Republic of San Marino","Repubblica di San Marino"],"ll":true,"cur":"Euro","lang":"Italian"},{"n":"Somalia","id":706,"a2":"so","a3":"SOM","cap":"Mogadishu","pop":15008154,"area":637657,"reg":"Africa","sub":"Eastern Africa","lat":10,"lng":49,"bord":["DJI","ETH","KEN"],"alt":["SO","aṣ-Ṣūmāl","Federal Republic of Somalia","Jamhuuriyadda Federaalka Soomaaliya","Jumhūriyyat aṣ-Ṣūmāl al-Fiderāliyya"],"ll":false,"cur":"Somali shilling","lang":"Arabic"},{"n":"Serbia","id":688,"a2":"rs","a3":"SRB","cap":"Belgrade","pop":6963764,"area":88361,"reg":"Europe","sub":"Southeast Europe","lat":44,"lng":21,"bord":["BIH","BGR","HRV","HUN","UNK","MKD","MNE","ROU"],"alt":["RS","Srbija","Republika Srbija","Србија","Република Србија","Republic of Serbia"],"ll":true,"cur":"Serbian dinar","lang":"Serbian"},{"n":"South Sudan","id":728,"a2":"ss","a3":"SSD","cap":"Juba","pop":10975920,"area":619745,"reg":"Africa","sub":"Middle Africa","lat":7,"lng":30,"bord":["CAF","COD","ETH","KEN","SDN","UGA"],"alt":["SS"],"ll":true,"cur":"South Sudanese pound","lang":"English"},{"n":"São Tomé and Príncipe","id":678,"a2":"st","a3":"STP","cap":"São Tomé","pop":211028,"area":964,"reg":"Africa","sub":"Middle Africa","lat":1,"lng":7,"bord":[],"alt":["ST","Democratic Republic of São Tomé and Príncipe","Sao Tome and Principe","República Democrática de São Tomé e Príncipe"],"ll":false,"cur":"São Tomé and Príncipe dobra","lang":"Portuguese"},{"n":"Suriname","id":740,"a2":"sr","a3":"SUR","cap":"Paramaribo","pop":575991,"area":163820,"reg":"Americas","sub":"South America","lat":4,"lng":-56,"bord":["BRA","GUF","GUY"],"alt":["SR","Sarnam","Sranangron","Republic of Suriname","Republiek Suriname"],"ll":false,"cur":"Surinamese dollar","lang":"Dutch"},{"n":"Slovakia","id":703,"a2":"sk","a3":"SVK","cap":"Bratislava","pop":5446771,"area":49037,"reg":"Europe","sub":"Central Europe","lat":48.67,"lng":19.5,"bord":["AUT","CZE","HUN","POL","UKR"],"alt":["SK","Slovak Republic","Slovenská republika"],"ll":true,"cur":"Euro","lang":"Slovak"},{"n":"Slovenia","id":705,"a2":"si","a3":"SVN","cap":"Ljubljana","pop":2073894,"area":20273,"reg":"Europe","sub":"Central Europe","lat":46.12,"lng":14.82,"bord":["AUT","HRV","ITA","HUN"],"alt":["SI","Republic of Slovenia","Republika Slovenija"],"ll":false,"cur":"Euro","lang":"Slovene"},{"n":"Sweden","id":752,"a2":"se","a3":"SWE","cap":"Stockholm","pop":10175214,"area":450295,"reg":"Europe","sub":"Northern Europe","lat":62,"lng":15,"bord":["FIN","NOR"],"alt":["SE","Kingdom of Sweden","Konungariket Sverige"],"ll":false,"cur":"Swedish krona","lang":"Swedish"},{"n":"Eswatini","id":748,"a2":"sz","a3":"SWZ","cap":"Lobamba","pop":1136191,"area":17364,"reg":"Africa","sub":"Southern Africa","lat":-26.5,"lng":31.5,"bord":["MOZ","ZAF"],"alt":["SZ","Swaziland","weSwatini","Swatini","Ngwane","Kingdom of Eswatini","Umbuso weSwatini"],"ll":true,"cur":"Swazi lilangeni","lang":"English"},{"n":"Seychelles","id":690,"a2":"sc","a3":"SYC","cap":"Victoria","pop":96762,"area":452,"reg":"Africa","sub":"Eastern Africa","lat":-4.58,"lng":55.67,"bord":[],"alt":["SC","Republic of Seychelles","Repiblik Sesel","République des Seychelles"],"ll":false,"cur":"Seychellois rupee","lang":"Seychellois Creole"},{"n":"Syria","id":760,"a2":"sy","a3":"SYR","cap":"Damascus","pop":16906283,"area":185180,"reg":"Asia","sub":"Western Asia","lat":35,"lng":38,"bord":["IRQ","ISR","JOR","LBN","TUR"],"alt":["SY","Syrian Arab Republic","Al-Jumhūrīyah Al-ʻArabīyah As-Sūrīyah"],"ll":false,"cur":"Syrian pound","lang":"Arabic"},{"n":"Chad","id":148,"a2":"td","a3":"TCD","cap":"N\u0027Djamena","pop":15477751,"area":1284000,"reg":"Africa","sub":"Middle Africa","lat":15,"lng":19,"bord":["CMR","CAF","LBY","NER","NGA","SDN"],"alt":["TD","Tchad","Republic of Chad","République du Tchad"],"ll":true,"cur":"Central African CFA franc","lang":"Arabic"},{"n":"Togo","id":768,"a2":"tg","a3":"TGO","cap":"Lomé","pop":7889094,"area":56785,"reg":"Africa","sub":"Western Africa","lat":8,"lng":1.17,"bord":["BEN","BFA","GHA"],"alt":["TG","Togolese","Togolese Republic","République Togolaise"],"ll":false,"cur":"West African CFA franc","lang":"French"},{"n":"Thailand","id":764,"a2":"th","a3":"THA","cap":"Bangkok","pop":69428524,"area":513120,"reg":"Asia","sub":"South-Eastern Asia","lat":15,"lng":100,"bord":["MMR","KHM","LAO","MYS"],"alt":["TH","Prathet","Thai","Kingdom of Thailand","ราชอาณาจักรไทย","Ratcha Anachak Thai"],"ll":false,"cur":"Thai baht","lang":"Thai"},{"n":"Tajikistan","id":762,"a2":"tj","a3":"TJK","cap":"Dushanbe","pop":9100837,"area":143100,"reg":"Asia","sub":"Central Asia","lat":39,"lng":71,"bord":["AFG","CHN","KGZ","UZB"],"alt":["TJ","Toçikiston","Republic of Tajikistan","Ҷумҳурии Тоҷикистон","Çumhuriyi Toçikiston"],"ll":true,"cur":"Tajikistani somoni","lang":"Russian"},{"n":"Turkmenistan","id":795,"a2":"tm","a3":"TKM","cap":"Ashgabat","pop":5850908,"area":488100,"reg":"Asia","sub":"Central Asia","lat":40,"lng":60,"bord":["AFG","IRN","KAZ","UZB"],"alt":["TM"],"ll":true,"cur":"Turkmenistan manat","lang":"Russian"},{"n":"Timor-Leste","id":626,"a2":"tl","a3":"TLS","cap":"Dili","pop":1267972,"area":14874,"reg":"Asia","sub":"South-Eastern Asia","lat":-8.83,"lng":125.92,"bord":["IDN"],"alt":["TL","East Timor","Timor","Democratic Republic of Timor-Leste","República Democrática de Timor-Leste","Repúblika Demokrátika Timór-Leste","Timór Lorosa\u0027e","Timor Lorosae"],"ll":false,"cur":"United States dollar","lang":"Portuguese"},{"n":"Tonga","id":776,"a2":"to","a3":"TON","cap":"Nuku\u0027alofa","pop":103197,"area":747,"reg":"Oceania","sub":"Polynesia","lat":-20,"lng":-175,"bord":[],"alt":["TO"],"ll":false,"cur":"Tongan paʻanga","lang":"English"},{"n":"Trinidad and Tobago","id":780,"a2":"tt","a3":"TTO","cap":"Port of Spain","pop":1389858,"area":5130,"reg":"Americas","sub":"Caribbean","lat":11,"lng":-61,"bord":[],"alt":["TT","Republic of Trinidad and Tobago"],"ll":false,"cur":"Trinidad and Tobago dollar","lang":"English"},{"n":"Tunisia","id":788,"a2":"tn","a3":"TUN","cap":"Tunis","pop":11565204,"area":163610,"reg":"Africa","sub":"Northern Africa","lat":34,"lng":9,"bord":["DZA","LBY"],"alt":["TN","Republic of Tunisia","al-Jumhūriyyah at-Tūnisiyyah"],"ll":false,"cur":"Tunisian dinar","lang":"Arabic"},{"n":"Türkiye","id":792,"a2":"tr","a3":"TUR","cap":"Ankara","pop":84339067,"area":783562,"reg":"Asia","sub":"Western Asia","lat":39,"lng":35,"bord":["ARM","AZE","BGR","GEO","GRC","IRN","IRQ","SYR"],"alt":["TR","Turkiye","Republic of Turkey","Türkiye Cumhuriyeti"],"ll":false,"cur":"Turkish lira","lang":"Turkish"},{"n":"Tuvalu","id":798,"a2":"tv","a3":"TUV","cap":"Funafuti","pop":11508,"area":26,"reg":"Oceania","sub":"Polynesia","lat":-8,"lng":178,"bord":[],"alt":["TV"],"ll":false,"cur":"Australian dollar","lang":"English"},{"n":"Tanzania","id":834,"a2":"tz","a3":"TZA","cap":"Dodoma","pop":56318348,"area":945087,"reg":"Africa","sub":"Eastern Africa","lat":-6,"lng":35,"bord":["BDI","COD","KEN","MWI","MOZ","RWA","UGA","ZMB"],"alt":["TZ","Tanzania, United Republic of","United Republic of Tanzania","Jamhuri ya Muungano wa Tanzania"],"ll":false,"cur":"Tanzanian shilling","lang":"English"},{"n":"Uganda","id":800,"a2":"ug","a3":"UGA","cap":"Kampala","pop":42723139,"area":241550,"reg":"Africa","sub":"Eastern Africa","lat":1,"lng":32,"bord":["COD","KEN","RWA","SSD","TZA"],"alt":["UG","Republic of Uganda","Jamhuri ya Uganda"],"ll":true,"cur":"Ugandan shilling","lang":"English"},{"n":"Ukraine","id":804,"a2":"ua","a3":"UKR","cap":"Kyiv","pop":44622516,"area":603500,"reg":"Europe","sub":"Eastern Europe","lat":49,"lng":32,"bord":["BLR","HUN","MDA","POL","ROU","RUS","SVK"],"alt":["UA","Ukrayina"],"ll":false,"cur":"Ukrainian hryvnia","lang":"Ukrainian"},{"n":"Uruguay","id":858,"a2":"uy","a3":"URY","cap":"Montevideo","pop":3449299,"area":181034,"reg":"Americas","sub":"South America","lat":-33,"lng":-56,"bord":["ARG","BRA"],"alt":["UY","Oriental Republic of Uruguay","República Oriental del Uruguay"],"ll":false,"cur":"Uruguayan peso","lang":"Spanish"},{"n":"United States","id":840,"a2":"us","a3":"USA","cap":"Washington D.C.","pop":326687501,"area":9372610,"reg":"Americas","sub":"North America","lat":38,"lng":-97,"bord":["CAN","MEX"],"alt":["US","USA","United States of America"],"ll":false,"cur":"United States dollar","lang":"English"},{"n":"Uzbekistan","id":860,"a2":"uz","a3":"UZB","cap":"Tashkent","pop":32955400,"area":447400,"reg":"Asia","sub":"Central Asia","lat":41,"lng":64,"bord":["AFG","KAZ","KGZ","TJK","TKM"],"alt":["UZ","Republic of Uzbekistan","O‘zbekiston Respublikasi","Ўзбекистон Республикаси"],"ll":true,"cur":"Uzbekistani soʻm","lang":"Russian"},{"n":"Vatican City","id":336,"a2":"va","a3":"VAT","cap":"Vatican City","pop":825,"area":0.44,"reg":"Europe","sub":"Southern Europe","lat":41.9,"lng":12.45,"bord":["ITA"],"alt":["VA","Holy See (Vatican City State)","Vatican City State","Vatican","Stato della Città del Vaticano"],"ll":true,"cur":"Euro","lang":"Italian"},{"n":"Saint Vincent and the Grenadines","id":670,"a2":"vc","a3":"VCT","cap":"Kingstown","pop":110210,"area":389,"reg":"Americas","sub":"Caribbean","lat":13.25,"lng":-61.2,"bord":[],"alt":["VC"],"ll":false,"cur":"Eastern Caribbean dollar","lang":"English"},{"n":"Venezuela","id":862,"a2":"ve","a3":"VEN","cap":"Caracas","pop":28870195,"area":916445,"reg":"Americas","sub":"South America","lat":8,"lng":-66,"bord":["BRA","COL","GUY"],"alt":["VE","Bolivarian Republic of Venezuela","Venezuela, Bolivarian Republic of","República Bolivariana de Venezuela"],"ll":false,"cur":"Venezuelan bolívar soberano","lang":"Spanish"},{"n":"Vietnam","id":704,"a2":"vn","a3":"VNM","cap":"Hanoi","pop":95540395,"area":331212,"reg":"Asia","sub":"South-Eastern Asia","lat":16.17,"lng":107.83,"bord":["KHM","CHN","LAO"],"alt":["VN","Socialist Republic of Vietnam","Cộng hòa Xã hội chủ nghĩa Việt Nam","Viet Nam"],"ll":false,"cur":"Vietnamese đồng","lang":"Vietnamese"},{"n":"Vanuatu","id":548,"a2":"vu","a3":"VUT","cap":"Port Vila","pop":292680,"area":12189,"reg":"Oceania","sub":"Melanesia","lat":-16,"lng":167,"bord":[],"alt":["VU","Republic of Vanuatu","Ripablik blong Vanuatu","République de Vanuatu"],"ll":false,"cur":"Vanuatu vatu","lang":"Bislama"},{"n":"Samoa","id":882,"a2":"ws","a3":"WSM","cap":"Apia","pop":196130,"area":2842,"reg":"Oceania","sub":"Polynesia","lat":-13.58,"lng":-172.33,"bord":[],"alt":["WS","Independent State of Samoa","Malo Saʻoloto Tutoʻatasi o Sāmoa"],"ll":false,"cur":"Samoan tālā","lang":"English"},{"n":"Yemen","id":887,"a2":"ye","a3":"YEM","cap":"Sana\u0027a","pop":28498687,"area":527968,"reg":"Asia","sub":"Western Asia","lat":15,"lng":48,"bord":["OMN","SAU"],"alt":["YE","Yemeni Republic","al-Jumhūriyyah al-Yamaniyyah"],"ll":false,"cur":"Yemeni rial","lang":"Arabic"},{"n":"South Africa","id":710,"a2":"za","a3":"ZAF","cap":"Pretoria","pop":57779622,"area":1221037,"reg":"Africa","sub":"Southern Africa","lat":-29,"lng":24,"bord":["BWA","LSO","MOZ","NAM","SWZ","ZWE"],"alt":["ZA","RSA","Suid-Afrika","Republic of South Africa"],"ll":false,"cur":"South African rand","lang":"Afrikaans"},{"n":"Zambia","id":894,"a2":"zm","a3":"ZMB","cap":"Lusaka","pop":17351822,"area":752612,"reg":"Africa","sub":"Eastern Africa","lat":-15,"lng":30,"bord":["AGO","BWA","COD","MWI","MOZ","NAM","TZA","ZWE"],"alt":["ZM","Republic of Zambia"],"ll":true,"cur":"Zambian kwacha","lang":"English"},{"n":"Zimbabwe","id":716,"a2":"zw","a3":"ZWE","cap":"Harare","pop":14439018,"area":390757,"reg":"Africa","sub":"Eastern Africa","lat":-20,"lng":30,"bord":["BWA","MOZ","ZAF","ZMB"],"alt":["ZW","Republic of Zimbabwe"],"ll":true,"cur":"Botswana pula","lang":"Chibarwe"}];
+
+/* ---------- tiny DOM helper ---------- */
+function h(tag, attrs, ...kids){
+  const e=document.createElement(tag);
+  if(attrs) for(const k in attrs){
+    const v=attrs[k];
+    if(k==="class")e.className=v;
+    else if(k==="html")e.innerHTML=v;
+    else if(k==="text")e.textContent=v;
+    else if(k==="style"&&typeof v==="object")Object.assign(e.style,v);
+    else if(k.startsWith("on")&&typeof v==="function")e.addEventListener(k.slice(2),v);
+    else if(v===true)e.setAttribute(k,"");
+    else if(v!==false&&v!=null)e.setAttribute(k,v);
+  }
+  for(let kid of kids.flat()){ if(kid==null||kid===false)continue; e.appendChild(kid.nodeType?kid:document.createTextNode(kid)); }
+  return e;
+}
+const $=(s,r=document)=>r.querySelector(s);
+
+/* ---------- data indexes ---------- */
+const C=COUNTRIES;
+const byA3=Object.fromEntries(C.map(c=>[c.a3,c]));
+const byId=Object.fromEntries(C.map(c=>[c.id,c]));
+const NAMES=C.map(c=>c.n);
+function norm(s){return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]/g,"");}
+// name -> country (incl alt spellings)
+const NAME_LOOKUP={};
+for(const c of C){ NAME_LOOKUP[norm(c.n)]=c; for(const a of (c.alt||[])){ const k=norm(a); if(k&&!NAME_LOOKUP[k])NAME_LOOKUP[k]=c; } }
+const CAPITALS=C.filter(c=>c.cap);
+
+/* ---------- utils ---------- */
+const R=6371;
+const toRad=d=>d*Math.PI/180;
+function haversine(a,b){
+  const dLat=toRad(b.lat-a.lat), dLng=toRad(b.lng-a.lng);
+  const s=Math.sin(dLat/2)**2+Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)**2;
+  return Math.round(2*R*Math.asin(Math.sqrt(s)));
+}
+function bearing(a,b){
+  const y=Math.sin(toRad(b.lng-a.lng))*Math.cos(toRad(b.lat));
+  const x=Math.cos(toRad(a.lat))*Math.sin(toRad(b.lat))-Math.sin(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.cos(toRad(b.lng-a.lng));
+  return (Math.atan2(y,x)*180/Math.PI+360)%360;
+}
+const ARROWS=["⬆️","↗️","➡️","↘️","⬇️","↙️","⬅️","↖️"];
+function arrowFor(deg){ return ARROWS[Math.round(deg/45)%8]; }
+const MAXD=20015; // half earth circumference km
+function proximity(km){ return Math.max(0,Math.round((1-km/MAXD)*100)); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function sample(a,n){ return shuffle(a).slice(0,n); }
+function randOf(a){ return a[Math.floor(Math.random()*a.length)]; }
+function fmt(n){ return n.toLocaleString("en-US"); }
+function mulberry32(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function daySeed(){ const d=new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
+function todayKey(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function flagUrl(a2,w){ return "https://flagcdn.com/w"+(w||320)+"/"+a2+".png"; }
+function flagImg(a2,w,h2,cls){ const img=h("img",{class:"flag "+(cls||""),src:flagUrl(a2,w||160),alt:"",loading:"lazy",width:w||"",height:h2||""}); img.addEventListener("error",()=>{img.style.visibility="hidden";}); return img; }
+
+/* ---------- storage / stats ---------- */
+const store={
+  get(k,d){ try{const v=localStorage.getItem("gg_"+k); return v==null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{localStorage.setItem("gg_"+k,JSON.stringify(v));}catch(e){} }
+};
+function stats(id){ return store.get("stat_"+id,{plays:0,best:0,streak:0}); }
+function saveScore(id,score){ const s=stats(id); s.plays++; if(score>s.best)s.best=score; store.set("stat_"+id,s); return s; }
+function setStreak(id,val){ const s=stats(id); s.streak=val; if(val>s.best)s.best=val; store.set("stat_"+id,s); return s; }
+
+/* ---------- sound ---------- */
+let SFX=store.get("sfx",true); let _actx=null; let HARD=store.get("hard",false);
+function beep(freq,dur,type,vol){ if(!SFX)return; try{ _actx=_actx||new (window.AudioContext||window.webkitAudioContext)(); if(_actx.state==="suspended")_actx.resume(); const o=_actx.createOscillator(),g=_actx.createGain(),t=_actx.currentTime; o.type=type||"sine"; o.frequency.value=freq; o.connect(g); g.connect(_actx.destination); g.gain.setValueAtTime(vol||.05,t); g.gain.exponentialRampToValueAtTime(.0001,t+(dur||.15)); o.start(t); o.stop(t+(dur||.16)); }catch(e){} }
+function sfxGood(){ beep(660,.1,"sine",.05); setTimeout(()=>beep(990,.1,"sine",.05),80); }
+function sfxWin(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.16,"triangle",.06),i*100)); }
+function toggleSfx(){ SFX=!SFX; store.set("sfx",SFX); const b=$("#sfxBtn"); if(b)b.textContent=SFX?"🔊":"🔇"; if(SFX)beep(880,.1,"sine",.05); }
+
+/* ---------- toast + confetti ---------- */
+function toast(msg){ if(/^✓/.test(msg))sfxGood(); const t=h("div",{class:"toast",text:msg}); $("#toast").appendChild(t); setTimeout(()=>{t.style.opacity="0";t.style.transition=".3s";setTimeout(()=>t.remove(),300);},1800); }
+function confetti(){
+  sfxWin();
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+  const cv=$("#confetti"),ctx=cv.getContext("2d"); cv.style.display="block"; cv.width=innerWidth; cv.height=innerHeight;
+  const cols=["#7c78ff","#22d3ee","#4ade80","#fbbf24","#f87171"];
+  const P=Array.from({length:130},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.3,r:4+Math.random()*6,c:randOf(cols),vy:2+Math.random()*4,vx:-2+Math.random()*4,a:Math.random()*6}));
+  let f=0; (function loop(){ ctx.clearRect(0,0,cv.width,cv.height); f++;
+    P.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.a+=.1;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);ctx.restore();});
+    if(f<130)requestAnimationFrame(loop); else cv.style.display="none";
+  })();
+}
+
+/* ---------- share + result modal ---------- */
+function doShare(text){ try{ if(navigator.share){ navigator.share({text:text}).catch(()=>{}); } else if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>toast("✓ Copied to clipboard!"),()=>toast("Copy failed")); } else { toast("Sharing not supported here"); } }catch(e){ toast("Copy failed"); } }
+function modal(opts){
+  const ov=h("div",{class:"overlay",onclick:e=>{if(e.target===ov)close();}});
+  function close(){ ov.remove(); }
+  const body=h("div",{class:"modal"});
+  body.appendChild(h("div",{class:"big-em",text:opts.emoji||"🎉"}));
+  body.appendChild(h("h2",{text:opts.title||""}));
+  if(opts.sub)body.appendChild(h("p",{class:"muted",style:{margin:"2px 0 6px"},text:opts.sub}));
+  if(opts.node)body.appendChild(opts.node);
+  const btns=h("div",{class:"row-wrap",style:{justifyContent:"center",marginTop:"14px"}});
+  (opts.buttons||[{label:"Close",fn:close}]).forEach(b=>{
+    btns.appendChild(h("button",{class:"btn "+(b.primary?"primary":""),onclick:()=>{b.fn&&b.fn(close);}},b.label));
+  });
+  if(opts.share)btns.appendChild(h("button",{class:"btn",onclick:()=>doShare(typeof opts.share==="function"?opts.share():opts.share)},"🔗 Share"));
+  body.appendChild(btns);
+  ov.appendChild(body); document.body.appendChild(ov);
+  return close;
+}
+
+/* ---------- autocomplete (countries or capitals) ---------- */
+function autocomplete(source, onPick, placeholder){
+  // source: array of {label, sub, a2, data}
+  const wrap=h("div",{class:"ac-wrap"});
+  const input=h("input",{class:"ac-input",type:"text",placeholder:placeholder||"Type a country…",autocomplete:"off",spellcheck:"false"});
+  const list=h("div",{class:"ac-list",style:{display:"none"}});
+  wrap.append(input,list); let items=[],active=-1;
+  function render(q){
+    const nq=norm(q); items=[];
+    if(nq){ for(const s of source){ if(norm(s.label).includes(nq)||(s.data&&s.data.alt&&s.data.alt.some(a=>norm(a).includes(nq)))){ items.push(s); if(items.length>=7)break; } } }
+    list.innerHTML=""; active=-1;
+    if(!items.length){ list.style.display="none"; return; }
+    items.forEach((s,i)=>{
+      const it=h("div",{class:"ac-item",onmousedown:e=>{e.preventDefault();pick(i);}});
+      if(s.a2)it.appendChild(flagImg(s.a2,40,"","shadow")).style && (it.lastChild.width=26,it.lastChild.height=18);
+      it.appendChild(h("span",{text:s.label}));
+      if(s.sub)it.appendChild(h("small",{text:s.sub}));
+      list.appendChild(it);
+    });
+    list.style.display="block";
+  }
+  function pick(i){ const s=items[i]; if(!s)return; input.value=""; list.style.display="none"; onPick(s); }
+  function move(d){ if(!items.length)return; active=(active+d+items.length)%items.length; [...list.children].forEach((c,i)=>c.classList.toggle("active",i===active)); }
+  input.addEventListener("input",()=>render(input.value));
+  input.addEventListener("focus",()=>render(input.value));
+  input.addEventListener("blur",()=>setTimeout(()=>list.style.display="none",120));
+  input.addEventListener("keydown",e=>{
+    if(e.key==="ArrowDown"){e.preventDefault();move(1);}
+    else if(e.key==="ArrowUp"){e.preventDefault();move(-1);}
+    else if(e.key==="Enter"){e.preventDefault(); if(active>=0)pick(active); else if(items.length)pick(0); }
+    else if(e.key==="Escape")list.style.display="none";
+  });
+  return {wrap,input,focus:()=>input.focus()};
+}
+const countrySource=C.map(c=>({label:c.n,sub:c.reg,a2:c.a2,data:c}));
+
+/* ---------- topojson loading ---------- */
+const _cache={};
+async function loadTopo(url,obj){
+  if(_cache[url])return _cache[url];
+  const r=await fetch(url); if(!r.ok)throw new Error("net"); const t=await r.json();
+  const geo=topojson.feature(t,t.objects[obj]); _cache[url]=geo; return geo;
+}
+const WORLD_URL="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const US_URL="https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
+const loading=()=>h("div",{class:"center",style:{padding:"40px"}},h("div",{class:"spin"}),h("p",{class:"muted",text:"Loading map…"}));
+const mapError=(retry)=>h("div",{class:"panel center"},h("div",{class:"big-em",text:"🛰️"}),h("h3",{text:"Couldn't load the map"}),h("p",{class:"muted",style:{textAlign:"center"},text:"This game needs an internet connection for map data."}),h("button",{class:"btn primary",onclick:retry},"Try again"));
+
+/* ========================================================= HOME */
+const GAMES=[
+  {id:"shapedle",em:"🗺️",title:"Shapedle",tag:"Daily-style",desc:"Guess the country from its outline. Distance and direction clues after every guess."},
+  {id:"globle",em:"🔥",title:"Globle",tag:"Hot / cold",desc:"Guess countries — the map heats up as you close in on the secret one.",stat:"played"},
+  {id:"flagle",em:"🚩",title:"Flagle",tag:"6 guesses",desc:"A flag is revealed tile by tile. Name the country before it's fully shown."},
+  {id:"find",em:"📍",title:"Find the Country",tag:"Map",desc:"Locate the named country on a zoomable world map by clicking it."},
+  {id:"travle",em:"🧭",title:"Travle",tag:"Route",desc:"Build a land route between two countries, hopping across shared borders.",stat:"played"},
+  {id:"higherlower",em:"⚖️",title:"Higher or Lower",tag:"Streak",desc:"Which country has more people — or more land? Keep the run alive."},
+  {id:"daily",em:"📅",title:"Daily Challenge",tag:"1 per day",desc:"One shared shape puzzle each day. Solve it and share your emoji score."},
+  {id:"capitals",em:"🏛️",title:"Capital Quiz",tag:"Endless",desc:"Name the capital city of each country. Build the longest streak you can."},
+  {id:"nameall",em:"🌐",title:"Countries of the World",tag:"Timed",desc:"Name as many of the 194 countries as you can in five minutes.",stat:"score"},
+  {id:"clue",em:"🕵️",title:"Clue Hunt",tag:"Deduce",desc:"Uncover a mystery country from clues about its region, size and borders.",stat:"streak"},
+  {id:"region",em:"🧩",title:"Region Map Quiz",tag:"Map",desc:"Pick a continent and click each country as it's called out.",stat:"score"},
+  {id:"flags",em:"⚡",title:"Flag Sprint",tag:"Timed",desc:"Match as many flags to their countries as you can. Race the clock."},
+  {id:"rankit",em:"📊",title:"Rank It",tag:"Order",desc:"Put five countries in order by population or land area.",stat:"streak"},
+  {id:"distance",em:"📏",title:"Distance Guess",tag:"Estimate",desc:"How far apart are these two countries? Guess the distance in kilometres.",stat:"streak"},
+  {id:"neighbours",em:"🤝",title:"Neighbours",tag:"Puzzle",desc:"Name every country bordering the target to clear the round.",stat:"streak"},
+  {id:"borders",em:"🔗",title:"Border Chain",tag:"Puzzle",desc:"Name a country that borders the last. Chain neighbours as far as you can."},
+  {id:"states",em:"🗽",title:"USA States",tag:"Map",desc:"Click each U.S. state as it's called out. How well do you know the 50?"},
+  {id:"popguess",em:"👥",title:"Population Guess",tag:"Estimate",desc:"Estimate a country's population. Stay within 25% to keep your streak.",stat:"streak"},
+  {id:"continent",em:"🌎",title:"Continent Match",tag:"Quick-fire",desc:"Which continent is it in? Fast multiple-choice streak game.",stat:"streak"},
+  {id:"odd",em:"🧠",title:"Odd One Out",tag:"Logic",desc:"Three countries share a continent — tap the one that doesn't belong.",stat:"streak"},
+  {id:"capcountry",em:"🏙️",title:"Capital → Country",tag:"Endless",desc:"We give you a capital city — you name the country it belongs to.",stat:"streak"},
+  {id:"north",em:"⬆️",title:"True North",tag:"Streak",desc:"Two countries, one question: which one lies farther north or south?",stat:"streak"},
+  {id:"memory",em:"🃏",title:"Flag Match",tag:"Memory",desc:"Flip cards to pair each flag with its country. Clear the board in few moves.",stat:"played"},
+  {id:"scramble",em:"🔤",title:"Unscramble",tag:"Word",desc:"Unscramble the jumbled letters to reveal a country. A continent hint helps.",stat:"streak"},
+  {id:"currency",em:"💱",title:"Currency Quiz",tag:"Quiz",desc:"Which currency does each country use? Multiple-choice streak game.",stat:"streak"},
+  {id:"language",em:"🗣️",title:"Language Match",tag:"Quiz",desc:"Match each country to the language chiefly spoken there.",stat:"streak"},
+];
+const CATOF={ shapedle:"Guessing",globle:"Guessing",flagle:"Guessing",daily:"Guessing",clue:"Guessing",
+  find:"Maps",region:"Maps",states:"Maps",
+  capitals:"Quizzes",nameall:"Quizzes",flags:"Quizzes",continent:"Quizzes",odd:"Quizzes",capcountry:"Quizzes",
+  higherlower:"Estimate",rankit:"Estimate",distance:"Estimate",popguess:"Estimate",north:"Estimate",
+  travle:"Puzzles",neighbours:"Puzzles",borders:"Puzzles",memory:"Puzzles",scramble:"Puzzles",
+  currency:"Quizzes",language:"Quizzes" };
+const CATLIST=["All","Guessing","Maps","Quizzes","Estimate","Puzzles"];
+function home(view){
+  document.title="GeoGames — World Geography Games";
+  view.appendChild(h("div",{class:"hero"},
+    h("span",{class:"eyebrow",text:"🌍 194 countries · 26 games · free, no sign-ups"}),
+    h("h1",{html:"Play your way<br>around the world."})
+  ));
+  let active=store.get("cat","All"); if(CATLIST.indexOf(active)<0)active="All"; let query="";
+  const search=h("input",{class:"search",type:"search",placeholder:"Search games…",value:"",oninput:e=>{query=e.target.value.toLowerCase().trim();renderGrid();}});
+  const surprise=h("button",{class:"btn primary",style:{whiteSpace:"nowrap"},onclick:()=>nav(randOf(GAMES).id)},"🎲 Surprise me");
+  const toolbar=h("div",{class:"toolbar"},search,surprise);
+  const tabs=h("div",{class:"tabs"}); const grid=h("div",{class:"grid"});
+  const stickybar=h("div",{class:"stickybar"},toolbar,tabs);
+  function count(cat){ return cat==="All"?GAMES.length:GAMES.filter(g=>CATOF[g.id]===cat).length; }
+  function favList(){ return store.get("favs",[]); }
+  function toggleFav(id){ const f=favList(),i=f.indexOf(id); if(i>=0)f.splice(i,1); else f.unshift(id); store.set("favs",f); renderGrid(); }
+  function renderTabs(){ tabs.innerHTML=""; CATLIST.forEach(cat=>tabs.appendChild(h("button",{class:"tab"+(cat===active?" on":""),onclick:()=>{active=cat;store.set("cat",cat);renderTabs();renderGrid();}},cat,h("span",{class:"tcount",text:count(cat)})))); }
+  function renderGrid(){ grid.innerHTML="";
+    const fv=favList();
+    let list=GAMES.filter(g=>(active==="All"||CATOF[g.id]===active)&&(!query||g.title.toLowerCase().includes(query)||g.desc.toLowerCase().includes(query)||CATOF[g.id].toLowerCase().includes(query)));
+    list=list.slice().sort((a,b)=>(fv.indexOf(b.id)>=0?1:0)-(fv.indexOf(a.id)>=0?1:0));
+    if(!list.length){ grid.appendChild(h("p",{class:"muted",style:{gridColumn:"1/-1",textAlign:"center",padding:"24px"},text:"No games match your search."})); return; }
+    list.forEach((g,i)=>{
+      const s=stats(g.id);
+      const kind=g.stat||(["flags","find","states"].includes(g.id)?"score":["higherlower","capitals","borders"].includes(g.id)?"streak":"played");
+      const statLine=kind==="score"?["Best score ",h("b",{text:s.best})]:kind==="streak"?["Best streak ",h("b",{text:s.best})]:["Played ",h("b",{text:visits(g.id)})];
+      const fav=fv.indexOf(g.id)>=0;
+      grid.appendChild(h("a",{class:"gcard",href:"#/"+g.id},
+        h("div",{class:"gcard-top"},h("span",{class:"idx",text:String(i+1).padStart(2,"0")}),
+          h("div",{class:"tr"},h("span",{class:"tag",text:g.tag}),h("button",{class:"fav"+(fav?" on":""),title:fav?"Remove favourite":"Add favourite","aria-label":"Favourite",onclick:e=>{e.preventDefault();e.stopPropagation();toggleFav(g.id);}},fav?"★":"☆"))),
+        h("span",{class:"em",text:g.em}),h("h3",{text:g.title}),h("p",{text:g.desc}),h("div",{class:"stat"},...statLine))); }); }
+  view.appendChild(stickybar); view.appendChild(grid);
+  renderTabs(); renderGrid();
+  view.appendChild(h("p",{class:"muted small",style:{marginTop:"26px",textAlign:"center"},html:'Data: mledoze/countries · flags by flagcdn.com · maps by world-atlas. Built as a single offline-friendly HTML file.'}));
+}
+
+/* shared page header */
+function pageHead(title,sub){
+  return h("div",null,
+    h("a",{class:"back",href:"#/"},"← All games"),
+    h("div",{class:"page-head"},h("h1",{text:title}),sub?h("p",{text:sub}):null)
+  );
+}
+function chipRow(pairs){ return h("div",{class:"chips"},...pairs.map(([k,v])=>h("div",{class:"chip"},h("div",{class:"k",text:k}),h("div",{class:"v",text:v})))); }
+
+/* ========================================================= SHAPEDLE */
+function shapedle(view,opts){
+  opts=opts||{}; const daily=!!opts.daily; const id=daily?"daily":"shapedle";
+  document.title=(daily?"Daily Challenge":"Shapedle")+" — GeoGames";
+  view.appendChild(pageHead(daily?"Daily Challenge":"Shapedle", daily?"One shape for everyone today. Six guesses.":"Guess the mystery country from its shape. Six guesses, with distance & direction clues."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  const MAX=6;
+  let target, guesses=[], done=false;
+
+  if(daily){
+    const rng=mulberry32(daySeed()); const idx=Math.floor(rng()*C.length); target=C[idx];
+    const saved=store.get("daily_"+todayKey(),null);
+    if(saved){ guesses=saved.guesses.map(a3=>byA3[a3]); done=saved.done; }
+  } else {
+    target=randOf(C);
+  }
+
+  const svgBox=h("div",{class:"center",style:{minHeight:"260px",justifyContent:"center"}}); panel.appendChild(svgBox);
+  const acHost=h("div"); panel.appendChild(acHost);
+  const gWrap=h("div",{class:"guesses"}); panel.appendChild(gWrap);
+  const foot=h("div",{class:"row-wrap"}); panel.appendChild(foot);
+
+  function persistDaily(){ if(daily)store.set("daily_"+todayKey(),{guesses:guesses.map(g=>g.a3),done}); }
+
+  function drawSil(feature){
+    const W=420,H=280;
+    const proj=d3.geoAzimuthalEqualArea().rotate([-target.lng,-target.lat]).fitExtent([[16,16],[W-16,H-16]],feature);
+    const path=d3.geoPath(proj);
+    const svg=d3.create("svg").attr("viewBox",[0,0,W,H]).attr("width","100%").style("max-width","440px");
+    const defs=svg.append("defs").append("linearGradient").attr("id","silg").attr("x1","0").attr("y1","0").attr("x2","1").attr("y2","1");
+    defs.append("stop").attr("offset","0").attr("stop-color","var(--accent)");
+    defs.append("stop").attr("offset","1").attr("stop-color","var(--accent2)");
+    svg.append("path").attr("d",path(feature)).attr("class","sil");
+    svgBox.innerHTML=""; svgBox.appendChild(svg.node());
+  }
+  function hintFallback(){
+    svgBox.innerHTML=""; svgBox.appendChild(h("div",{class:"center"},h("div",{class:"big-em",text:"🧭"}),
+      h("p",{class:"muted",style:{textAlign:"center"},html:"Map image unavailable offline.<br>Hint: this country is in <b>"+target.reg+(target.sub?" · "+target.sub:"")+"</b>."})));
+  }
+
+  function addGuessRow(c){
+    const km=haversine(c,target), correct=c.a3===target.a3, prox=correct?100:proximity(km);
+    const row=h("div",{class:"guess"+(correct?" correct":"")},
+      flagImg(c.a2,40,"","shadow"),
+      h("span",{class:"gname",text:c.n}),
+      correct?h("span",{class:"prox",text:"✓"}):h("span",{class:"muted small",text:HARD?"—":fmt(km)+" km"}),
+      h("span",{class:"arrow",text:correct?"🎯":arrowFor(bearing(c,target))}),
+      (correct||!HARD)?h("span",{class:"bar"},h("i",{style:{width:prox+"%"}})):h("span"),
+      (correct||!HARD)?h("span",{class:"prox",text:prox+"%"}):h("span")
+    );
+    gWrap.appendChild(row);
+  }
+
+  function finish(win){
+    done=true; persistDaily();
+    if(!daily){ const s=stats(id); s.plays++; if(win){s.streak++; if(s.streak>s.best)s.best=s.streak;}else s.streak=0; store.set("stat_"+id,s); }
+    renderFoot();
+    if(win)confetti();
+    const shareNode = daily?buildShare(win):null;
+    modal({emoji:win?"🎉":"😵", title:win?"Correct!":"Out of guesses",
+      sub:(win?"You got it in "+guesses.length+" / "+MAX+". ":"")+"It was "+target.n+".",
+      node: h("div",null, h("div",{class:"center",style:{margin:"6px 0"}},flagImg(target.a2,320,"","shadow")), shareNode||null),
+      buttons: daily?[{label:"Share result",primary:true,fn:()=>doShare(win)},{label:"Close",fn:c=>c()}]
+                    :[{label:"Play again",primary:true,fn:c=>{c();shapedle(clearView(),{});}},{label:"Home",fn:()=>nav("")}]});
+  }
+  function buildShare(win){
+    let grid=""; guesses.forEach(g=>{ const p=g.a3===target.a3?100:proximity(haversine(g,target)); grid+= p===100?"🟩":p>=80?"🟨":p>=50?"🟧":"⬜"; });
+    return h("div",{class:"share-grid",text:grid});
+  }
+  function shareText(win){
+    let grid=""; guesses.forEach(g=>{ const p=g.a3===target.a3?100:proximity(haversine(g,target)); grid+= p===100?"🟩":p>=80?"🟨":p>=50?"🟧":"⬜"; });
+    return "GeoGames Daily "+todayKey()+"\n"+(win?guesses.length:"X")+"/"+MAX+"  "+grid+"\nplay: GeoGames";
+  }
+  function doShare(win){ const t=shareText(win); if(navigator.share){navigator.share({text:t}).catch(()=>{});} else {navigator.clipboard&&navigator.clipboard.writeText(t); toast("Result copied to clipboard!");} }
+
+  function guess(c){
+    if(done)return;
+    if(guesses.some(g=>g.a3===c.a3)){ toast("Already guessed"); return; }
+    guesses.push(c); addGuessRow(c); persistDaily();
+    if(c.a3===target.a3){ finish(true); }
+    else if(guesses.length>=MAX){ finish(false); }
+  }
+
+  const ac=autocomplete(countrySource,s=>guess(s.data),"Guess a country…");
+  acHost.appendChild(ac.wrap);
+
+  function renderFoot(){
+    foot.innerHTML="";
+    foot.appendChild(h("span",{class:"muted small",text:"Guess "+Math.min(guesses.length+(done?0:1),MAX)+" of "+MAX}));
+    if(done){ ac.input.disabled=true;
+      if(daily)foot.appendChild(h("button",{class:"btn",onclick:()=>doShare(guesses.some(g=>g.a3===target.a3))},"Share"));
+      else foot.appendChild(h("button",{class:"btn primary",onclick:()=>shapedle(clearView(),{})},"New country"));
+    }
+  }
+
+  guesses.forEach(addGuessRow); renderFoot();
+  if(done) ac.input.disabled=true;
+
+  loadTopo(WORLD_URL,"countries").then(geo=>{
+    const feat=geo.features.find(f=>+f.id===target.id);
+    if(feat)drawSil(feat); else hintFallback();
+    setTimeout(()=>{ if(!done)ac.focus(); },50);
+  }).catch(()=>hintFallback());
+}
+
+/* ========================================================= FLAGLE */
+function flagle(view){
+  document.title="Flagle — GeoGames";
+  view.appendChild(pageHead("Flagle","A flag is hidden behind tiles. Each guess reveals more — and gives a distance clue."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  const MAX=6; let target=randOf(C.filter(c=>c.a2)), guesses=[], done=false;
+  const tilesWrap=h("div",{class:"wrap-tiles"});
+  const img=h("img",{src:flagUrl(target.a2,640),alt:""});
+  const tiles=h("div",{class:"tiles"}); const tileEls=[]; for(let i=0;i<12;i++){const t=h("i");tiles.appendChild(t);tileEls.push(t);}
+  tilesWrap.append(img,tiles); panel.appendChild(tilesWrap);
+  const order=shuffle([...Array(12).keys()]);
+  function reveal(n){ for(let i=0;i<n&&i<12;i++)tileEls[order[i]].classList.add("rev"); }
+  reveal(2);
+  const acHost=h("div"); panel.appendChild(acHost);
+  const gWrap=h("div",{class:"guesses"}); panel.appendChild(gWrap);
+  const foot=h("div",{class:"row-wrap"}); panel.appendChild(foot);
+
+  function finish(win){
+    done=true; reveal(12);
+    const s=stats("flagle"); s.plays++; if(win){s.streak++;if(s.streak>s.best)s.best=s.streak;}else s.streak=0; store.set("stat_flagle",s);
+    if(win)confetti();
+    modal({emoji:win?"🎉":"😵",title:win?"Correct!":"Out of guesses",sub:(win?"Solved in "+guesses.length+"/"+MAX+". ":"")+"It was "+target.n+".",
+      share:win?("🚩 GeoGames Flagle — I named the flag in "+guesses.length+"/"+MAX+"!"):null,
+      node:h("div",{class:"center",style:{margin:"6px 0"}},flagImg(target.a2,320,"","shadow")),
+      buttons:[{label:"Play again",primary:true,fn:c=>{c();flagle(clearView());}},{label:"Home",fn:()=>nav("")}]});
+    foot.innerHTML=""; foot.appendChild(h("button",{class:"btn primary",onclick:()=>flagle(clearView())},"New flag"));
+  }
+  function guess(c){
+    if(done||guesses.some(g=>g.a3===c.a3))return;
+    guesses.push(c);
+    const km=haversine(c,target),correct=c.a3===target.a3;
+    gWrap.appendChild(h("div",{class:"guess"+(correct?" correct":"")},
+      flagImg(c.a2,40,"","shadow"),h("span",{class:"gname",text:c.n}),
+      correct?h("span",{class:"prox",text:"✓"}):h("span",{class:"muted small",text:HARD?"—":fmt(km)+" km"}),
+      h("span",{class:"arrow",text:correct?"🎯":arrowFor(bearing(c,target))}),
+      (correct||!HARD)?h("span",{class:"prox",text:(correct?100:proximity(km))+"%"}):h("span")));
+    if(correct)finish(true); else { reveal(2+guesses.length*2); if(guesses.length>=MAX)finish(false); }
+    foot.querySelector(".ct").textContent="Guess "+Math.min(guesses.length+1,MAX)+" of "+MAX;
+  }
+  const ac=autocomplete(countrySource,s=>guess(s.data),"Which country's flag is this?");
+  acHost.appendChild(ac.wrap);
+  foot.appendChild(h("span",{class:"muted small ct",text:"Guess 1 of "+MAX}));
+  setTimeout(()=>ac.focus(),50);
+}
+
+/* ========================================================= FLAG SPRINT (timed MC) */
+function flags(view){
+  document.title="Flag Sprint — GeoGames";
+  view.appendChild(pageHead("Flag Sprint","Pick the right country for each flag. 60 seconds — how many can you get?"));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let score=0,total=0,timeLeft=60,timer=null,cur=null,locked=false;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const flagBox=h("div",{class:"center"}); panel.appendChild(flagBox);
+  const opts=h("div",{class:"options",style:{width:"100%",maxWidth:"440px"}}); panel.appendChild(opts);
+  function refreshBar(){ bar.innerHTML=""; bar.append(
+    h("div",{class:"chip"},h("div",{class:"k",text:"Score"}),h("div",{class:"v",text:score})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Seen"}),h("div",{class:"v",text:total})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Time"}),h("div",{class:"v",text:timeLeft+"s"})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("flags").best}))); }
+  function next(){
+    locked=false; cur=randOf(C.filter(c=>c.a2));
+    const choices=shuffle([cur,...sample(C.filter(c=>c.a3!==cur.a3),3)]);
+    flagBox.innerHTML=""; flagBox.appendChild(flagImg(cur.a2,320,"","shadow"));
+    flagBox.firstChild.style.width="200px";
+    opts.innerHTML="";
+    choices.forEach(ch=>opts.appendChild(h("button",{class:"opt",onclick:e=>answer(ch,e.target)},ch.n)));
+    refreshBar();
+  }
+  function answer(ch,btn){
+    if(locked)return; locked=true; total++;
+    if(ch.a3===cur.a3){ score++; btn.classList.add("right"); }
+    else { btn.classList.add("wrong"); [...opts.children].forEach(b=>{if(b.textContent===cur.n)b.classList.add("right");}); }
+    [...opts.children].forEach(b=>b.disabled=true);
+    refreshBar(); setTimeout(next,ch.a3===cur.a3?350:850);
+  }
+  function end(){
+    clearInterval(timer); const s=saveScore("flags",score);
+    modal({emoji:score>=15?"🏆":score>=8?"👏":"⏱️",title:"Time!",sub:"You scored "+score+" out of "+total+".",
+      node:chipRow([["Score",score],["Accuracy",total?Math.round(score/total*100)+"%":"0%"],["Best",s.best]]),
+      buttons:[{label:"Play again",primary:true,fn:c=>{c();flags(clearView());}},{label:"Home",fn:()=>nav("")}]});
+  }
+  next();
+  timer=setInterval(()=>{ timeLeft--; refreshBar(); if(timeLeft<=0)end(); },1000);
+  return ()=>clearInterval(timer);
+}
+
+/* ========================================================= CAPITAL QUIZ */
+function capitals(view){
+  document.title="Capital Quiz — GeoGames";
+  view.appendChild(pageHead("Capital Quiz","Name the capital of each country. One wrong answer ends the streak."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,cur=null,locked=false,mode=store.get("cap_mode","choose");
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const seg=h("div",{class:"seg"},
+    h("button",{class:mode==="choose"?"on":"",onclick:()=>{mode="choose";store.set("cap_mode",mode);next();}},"Multiple choice"),
+    h("button",{class:mode==="type"?"on":"",onclick:()=>{mode="type";store.set("cap_mode",mode);next();}},"Type it")); panel.appendChild(seg);
+  const qBox=h("div",{class:"center"}); panel.appendChild(qBox);
+  const area=h("div",{style:{width:"100%",maxWidth:"440px"}}); panel.appendChild(area);
+  function refreshBar(){ bar.innerHTML=""; bar.append(
+    h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("capitals").best}))); }
+  function setSeg(){ seg.children[0].className=mode==="choose"?"on":""; seg.children[1].className=mode==="type"?"on":""; }
+  function next(){
+    setSeg(); locked=false; cur=randOf(CAPITALS);
+    qBox.innerHTML=""; qBox.append(flagImg(cur.a2,160,"","shadow"),h("h2",{style:{margin:"4px 0"},text:cur.n}),h("p",{class:"muted",text:"What is the capital?"}));
+    area.innerHTML="";
+    if(mode==="choose"){
+      const opts=h("div",{class:"options"});
+      shuffle([cur,...sample(CAPITALS.filter(c=>c.a3!==cur.a3),3)]).forEach(ch=>
+        opts.appendChild(h("button",{class:"opt",onclick:e=>answer(ch.cap,e.target)},ch.cap)));
+      area.appendChild(opts);
+    } else {
+      const capSource=CAPITALS.map(c=>({label:c.cap,sub:c.n,a2:c.a2,data:c}));
+      const ac=autocomplete(capSource,s=>answer(s.label,null),"Type the capital…");
+      area.appendChild(ac.wrap); setTimeout(()=>ac.focus(),50);
+    }
+    refreshBar();
+  }
+  function answer(val,btn){
+    if(locked)return; locked=true;
+    const correct=norm(val)===norm(cur.cap);
+    if(mode==="choose"){ [...area.querySelectorAll(".opt")].forEach(b=>{b.disabled=true; if(b.textContent===cur.cap)b.classList.add("right"); }); if(btn&&!correct)btn.classList.add("wrong"); }
+    if(correct){ streak++; setStreak("capitals",streak); toast("✓ "+cur.cap); setTimeout(next,mode==="choose"?550:250); }
+    else { end(); }
+  }
+  function end(){
+    const s=stats("capitals");
+    modal({emoji:streak>=10?"🏆":"🙈",title:"Streak over",sub:"The capital of "+cur.n+" is "+cur.cap+".",
+      node:chipRow([["Streak",streak],["Best",s.best]]),
+      buttons:[{label:"Try again",primary:true,fn:c=>{c();streak=0;capitals(clearView());}},{label:"Home",fn:()=>nav("")}]});
+  }
+  next();
+}
+
+/* ========================================================= HIGHER OR LOWER */
+function higherlower(view){
+  document.title="Higher or Lower — GeoGames";
+  view.appendChild(pageHead("Higher or Lower","Does the hidden country rank higher or lower? Pick the metric and keep the streak."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  let metric=store.get("hl_metric","pop"),streak=0,left=null,right=null,locked=false;
+  const top=h("div",{class:"row-wrap",style:{justifyContent:"space-between"}});
+  const seg=h("div",{class:"seg"},
+    h("button",{onclick:()=>{metric="pop";store.set("hl_metric",metric);reset();}},"Population"),
+    h("button",{onclick:()=>{metric="area";store.set("hl_metric",metric);reset();}},"Area (km²)"));
+  const bar=h("div",{class:"chips"});
+  top.append(seg,bar); panel.appendChild(top);
+  const board=h("div",{class:"hl"}); panel.appendChild(board);
+  const pool=C.filter(c=>c[metric==="pop"?"pop":"area"]>0);
+  function val(c){ return metric==="pop"?c.pop:c.area; }
+  function label(){ return metric==="pop"?"people":"km²"; }
+  function refreshBar(){ bar.innerHTML=""; bar.append(
+    h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("higherlower").best}))); }
+  function setSeg(){ seg.children[0].className=metric==="pop"?"on":""; seg.children[1].className=metric==="area"?"on":""; }
+  function reset(){ streak=0; left=randOf(pool); pick2(); render(); }
+  function pick2(){ do{ right=randOf(pool);}while(right.a3===left.a3||val(right)===val(left)); }
+  function render(revealRight){
+    setSeg(); refreshBar(); board.innerHTML="";
+    board.append(
+      side(left,true),
+      h("div",{class:"vs",text:"vs"}),
+      side(right,revealRight)
+    );
+    if(!revealRight){
+      board.children[2].append(
+        h("div",{class:"row-wrap",style:{justifyContent:"center",marginTop:"6px"}},
+          h("button",{class:"btn primary",onclick:()=>answer(true)},"⬆ Higher"),
+          h("button",{class:"btn",onclick:()=>answer(false)},"⬇ Lower")));
+    }
+  }
+  function side(c,showVal){
+    return h("div",{class:"side"},
+      flagImg(c.a2,320,"","shadow"),
+      h("div",{class:"cname",text:c.n}),
+      showVal?h("div",{class:"metric",text:fmt(val(c))}):h("div",{class:"qmark",text:"?"}),
+      h("div",{class:"muted small",text:showVal?label():("has more/less "+label()+" than "+left.n+"?")}));
+  }
+  function answer(higher){
+    if(locked)return; locked=true;
+    const correct=(val(right)>val(left))===higher;
+    render(true);
+    setTimeout(()=>{
+      if(correct){ streak++; setStreak("higherlower",streak); left=right; pick2(); locked=false; render(); }
+      else { end(); }
+    },900);
+  }
+  function end(){
+    const s=stats("higherlower");
+    modal({emoji:streak>=10?"🏆":"📉",title:"Wrong!",sub:right.n+" has "+fmt(val(right))+" "+label()+", vs "+left.n+"'s "+fmt(val(left))+".",
+      share:"⚖️ GeoGames Higher or Lower — I reached a streak of "+streak+"!",
+      node:chipRow([["Streak",streak],["Best",s.best]]),
+      buttons:[{label:"Play again",primary:true,fn:c=>{c();higherlower(clearView());}},{label:"Home",fn:()=>nav("")}]});
+  }
+  reset();
+}
+
+/* ========================================================= BORDER CHAIN */
+function borders(view){
+  document.title="Border Chain — GeoGames";
+  view.appendChild(pageHead("Border Chain","Name a country that shares a land border with the current one. No repeats — chain as far as you can."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  let cur=randOf(C.filter(c=>c.bord&&c.bord.length>=2)), used=[cur], chain=0, done=false;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const curBox=h("div",{class:"center"}); panel.appendChild(curBox);
+  const acHost=h("div"); panel.appendChild(acHost);
+  const usedBox=h("div",{class:"row-wrap"}); panel.appendChild(usedBox);
+  const foot=h("div",{class:"row-wrap"}); panel.appendChild(foot);
+  const ac=autocomplete(countrySource,s=>guess(s.data),"Name a bordering country…");
+  function refresh(){
+    bar.innerHTML=""; bar.append(
+      h("div",{class:"chip"},h("div",{class:"k",text:"Chain"}),h("div",{class:"v",text:chain})),
+      h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("borders").best})),
+      h("div",{class:"chip"},h("div",{class:"k",text:"Borders"}),h("div",{class:"v",text:(cur.bord||[]).length})));
+    curBox.innerHTML=""; curBox.append(flagImg(cur.a2,320,"","shadow"),h("h2",{style:{margin:"4px 0"},text:cur.n}),h("p",{class:"muted",text:"Chain a country bordering "+cur.n+"."}));
+    usedBox.innerHTML=""; usedBox.append(h("span",{class:"muted small",text:"Path: "}),...used.map((c,i)=>h("span",{class:"kbd",text:c.a3})));
+    ac.input.disabled=done;
+  }
+  function neighborsLeft(){ return (cur.bord||[]).map(a=>byA3[a]).filter(c=>c&&!used.some(u=>u.a3===c.a3)); }
+  function guess(c){
+    if(done)return;
+    if(used.some(u=>u.a3===c.a3)){ toast("Already used "+c.n); return; }
+    if(!(cur.bord||[]).includes(c.a3)){ toast(c.n+" doesn't border "+cur.n); return; }
+    chain++; setStreak("borders",chain); used.push(c); cur=c; refresh();
+    if(neighborsLeft().length===0){ done=true; end(true); }
+  }
+  function end(dead){
+    const s=stats("borders");
+    modal({emoji:chain>=8?"🏆":dead?"🚧":"🏁",title:dead?"Dead end!":"Chain ended",
+      sub:dead?cur.n+" has no new neighbours. Chain of "+chain+"!":"Longest chain: "+chain,
+      node:chipRow([["Chain",chain],["Best",s.best]]),
+      buttons:[{label:"New chain",primary:true,fn:c=>{c();borders(clearView());}},{label:"Home",fn:()=>nav("")}]});
+  }
+  acHost.appendChild(ac.wrap);
+  foot.append(
+    h("button",{class:"btn ghost small",onclick:()=>{ const n=neighborsLeft(); toast(n.length?("Try: "+randOf(n).n):"No neighbours left"); }},"💡 Hint"),
+    h("button",{class:"btn ghost small",onclick:()=>{ done=true; end(false); }},"Give up"));
+  refresh(); setTimeout(()=>ac.focus(),50);
+}
+
+/* ========================================================= FIND THE COUNTRY (map) */
+function find(view){
+  document.title="Find the Country — GeoGames";
+  view.appendChild(pageHead("Find the Country","Click the country as it's called out. 15 rounds — accuracy counts."));
+  const wrap=h("div",{class:"stack"}); view.appendChild(wrap);
+  const bar=h("div",{class:"chips"}); wrap.appendChild(bar);
+  const host=h("div"); wrap.appendChild(host);
+  host.appendChild(loading());
+  let score=0,round=0,ROUNDS=15,queue=[],cur=null,locked=false;
+  function refreshBar(){ bar.innerHTML=""; bar.append(
+    cur?h("div",{class:"chip"},h("div",{class:"k",text:"Find"}),h("div",{class:"v",style:{fontSize:"16px"},text:cur.n})):h("div"),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Score"}),h("div",{class:"v",text:score})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Round"}),h("div",{class:"v",text:Math.min(round,ROUNDS)+"/"+ROUNDS})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("find").best}))); }
+
+  loadTopo(WORLD_URL,"countries").then(geo=>{
+    const feats=geo.features.filter(f=>byId[+f.id]);
+    const W=960,H=500;
+    const proj=d3.geoNaturalEarth1().fitExtent([[2,2],[W-2,H-2]],{type:"FeatureCollection",features:feats});
+    const path=d3.geoPath(proj);
+    const svg=d3.create("svg").attr("viewBox",[0,0,W,H]);
+    const g=svg.append("g");
+    const byNode={};
+    feats.forEach(f=>{ const p=g.append("path").attr("d",path(f)).attr("class","geo").attr("data-id",f.id)
+      .on("click",()=>clickCountry(+f.id,p)); byNode[+f.id]=p; });
+    const zoom=d3.zoom().scaleExtent([1,8]).on("zoom",ev=>g.attr("transform",ev.transform));
+    svg.call(zoom);
+    const mw=h("div",{class:"mapwrap"});
+    mw.appendChild(svg.node());
+    mw.appendChild(h("div",{class:"zoomctl"},
+      h("button",{onclick:()=>svg.transition().call(zoom.scaleBy,1.6)},"+"),
+      h("button",{onclick:()=>svg.transition().call(zoom.scaleBy,.62)},"−")));
+    host.innerHTML=""; host.appendChild(mw);
+    queue=sample(feats.map(f=>byId[+f.id]),ROUNDS);
+    function clickCountry(id,p){
+      if(locked||!cur)return; locked=true; round++;
+      if(id===cur.id){ score++; p.classed("right",true); }
+      else { p.classed("wrong",true); byNode[cur.id]&&byNode[cur.id].classed("reveal",true); }
+      refreshBar();
+      setTimeout(()=>{ p.classed("right",false).classed("wrong",false); byNode[cur.id]&&byNode[cur.id].classed("reveal",false);
+        if(round>=ROUNDS)endGame(); else nextRound(); },700);
+    }
+    window.__findNext=null;
+    function nextRound(){ locked=false; cur=queue[round]; refreshBar(); }
+    function endGame(){ const s=saveScore("find",score);
+      modal({emoji:score>=12?"🌟":score>=7?"👍":"🗺️",title:"Round complete",sub:"You found "+score+" of "+ROUNDS+".",
+        node:chipRow([["Score",score],["Best",s.best]]),
+        buttons:[{label:"Play again",primary:true,fn:c=>{c();find(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+    nextRound();
+  }).catch(()=>{ host.innerHTML=""; host.appendChild(mapError(()=>find(clearView()))); });
+}
+
+/* ========================================================= USA STATES (map) */
+function states(view){
+  document.title="USA States — GeoGames";
+  view.appendChild(pageHead("USA States","Click each U.S. state as it's named. All 50 (plus DC) are fair game."));
+  const wrap=h("div",{class:"stack"}); view.appendChild(wrap);
+  const bar=h("div",{class:"chips"}); wrap.appendChild(bar);
+  const host=h("div"); wrap.appendChild(host); host.appendChild(loading());
+  let score=0,round=0,cur=null,locked=false,queue=[],ROUNDS=15;
+  function refreshBar(){ bar.innerHTML=""; bar.append(
+    cur?h("div",{class:"chip"},h("div",{class:"k",text:"Find"}),h("div",{class:"v",style:{fontSize:"16px"},text:cur.name})):h("div"),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Score"}),h("div",{class:"v",text:score})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Round"}),h("div",{class:"v",text:Math.min(round,ROUNDS)+"/"+ROUNDS})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("states").best}))); }
+  loadTopo(US_URL,"states").then(geo=>{
+    const feats=geo.features.filter(f=>f.properties&&f.properties.name);
+    const W=960,H=560;
+    const proj=d3.geoAlbersUsa().fitExtent([[10,10],[W-10,H-10]],{type:"FeatureCollection",features:feats});
+    const path=d3.geoPath(proj);
+    const svg=d3.create("svg").attr("viewBox",[0,0,W,H]); const g=svg.append("g"); const byName={};
+    feats.forEach(f=>{ const p=g.append("path").attr("d",path(f)).attr("class","geo").on("click",()=>click(f.properties.name,p)); byName[f.properties.name]=p; });
+    const zoom=d3.zoom().scaleExtent([1,6]).on("zoom",ev=>g.attr("transform",ev.transform)); svg.call(zoom);
+    const mw=h("div",{class:"mapwrap"}); mw.appendChild(svg.node());
+    mw.appendChild(h("div",{class:"zoomctl"},h("button",{onclick:()=>svg.transition().call(zoom.scaleBy,1.6)},"+"),h("button",{onclick:()=>svg.transition().call(zoom.scaleBy,.62)},"−")));
+    host.innerHTML=""; host.appendChild(mw);
+    queue=sample(feats.map(f=>({name:f.properties.name})),Math.min(ROUNDS,feats.length)); ROUNDS=queue.length;
+    function click(name,p){ if(locked||!cur)return; locked=true; round++;
+      if(name===cur.name){score++;p.classed("right",true);} else {p.classed("wrong",true); byName[cur.name]&&byName[cur.name].classed("reveal",true);} refreshBar();
+      setTimeout(()=>{ p.classed("right",false).classed("wrong",false); byName[cur.name]&&byName[cur.name].classed("reveal",false);
+        if(round>=ROUNDS)end(); else next(); },700); }
+    function next(){ locked=false; cur=queue[round]; refreshBar(); }
+    function end(){ const s=saveScore("states",score);
+      modal({emoji:score>=12?"🌟":"🇺🇸",title:"Round complete",sub:"You found "+score+" of "+ROUNDS+" states.",node:chipRow([["Score",score],["Best",s.best]]),
+        buttons:[{label:"Play again",primary:true,fn:c=>{c();states(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+    next();
+  }).catch(()=>{ host.innerHTML=""; host.appendChild(mapError(()=>states(clearView()))); });
+}
+
+/* ========================================================= GLOBLE (proximity map) */
+function globle(view){
+  document.title="Globle — GeoGames";
+  view.appendChild(pageHead("Globle","Guess any country. The map warms up as your guesses get closer to the secret one. Find it in as few tries as you can."));
+  const wrap=h("div",{class:"stack"}); view.appendChild(wrap);
+  const bar=h("div",{class:"chips"}); wrap.appendChild(bar);
+  const acHost=h("div"); wrap.appendChild(acHost);
+  const host=h("div"); wrap.appendChild(host); host.appendChild(loading());
+  const listBox=h("div",{class:"guesses"}); wrap.appendChild(listBox);
+  let target=randOf(C), guesses=[], done=false, repaint=null;
+  const ac=autocomplete(countrySource,s=>guess(s.data),"Guess a country…"); acHost.appendChild(ac.wrap);
+  function heat(km){ const t=Math.min(1,km/(MAXD*0.92)); return "hsl("+(t*230)+",75%,52%)"; }
+  function refreshBar(){ const cl=guesses.length?guesses.slice().sort((a,b)=>a._km-b._km)[0]:null; bar.innerHTML=""; bar.append(
+    h("div",{class:"chip"},h("div",{class:"k",text:"Guesses"}),h("div",{class:"v",text:guesses.length})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Closest"}),h("div",{class:"v",style:{fontSize:"15px"},text:cl?cl.n:"—"})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Plays"}),h("div",{class:"v",text:stats("globle").plays}))); }
+  function renderList(){ listBox.innerHTML=""; guesses.slice().sort((a,b)=>a._km-b._km).forEach(c=>{ const ok=c.a3===target.a3;
+    listBox.appendChild(h("div",{class:"guess"+(ok?" correct":"")},
+      h("span",{style:{width:"14px",height:"14px",borderRadius:"50%",flex:"none",background:ok?"var(--good)":heat(c._km)}}),
+      flagImg(c.a2,40,"","shadow"),h("span",{class:"gname",text:c.n}),
+      h("span",{class:"prox",text:ok?"✓ found":(HARD?"···":fmt(c._km)+" km")}))); }); }
+  function guess(c){ if(done)return; if(guesses.some(x=>x.a3===c.a3)){toast("Already guessed");return;}
+    c=Object.assign({},c); c._km=haversine(c,target); guesses.push(c); if(repaint)repaint(); renderList(); refreshBar();
+    if(c.a3===target.a3)finish(); }
+  function finish(){ done=true; ac.input.disabled=true; saveScore("globle",guesses.length); confetti();
+    modal({emoji:"🎯",title:"Found it!",sub:"It was "+target.n+" — solved in "+guesses.length+" guesses.",share:"🌍 GeoGames Globle — I found the secret country in "+guesses.length+" guesses! Can you beat me?",node:h("div",{class:"center",style:{margin:"6px 0"}},flagImg(target.a2,320,"","shadow")),
+      buttons:[{label:"Play again",primary:true,fn:x=>{x();globle(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  loadTopo(WORLD_URL,"countries").then(geo=>{
+    const feats=geo.features.filter(f=>byId[+f.id]); const W=960,H=500;
+    const proj=d3.geoNaturalEarth1().fitExtent([[2,2],[W-2,H-2]],{type:"FeatureCollection",features:feats});
+    const path=d3.geoPath(proj); const svg=d3.create("svg").attr("viewBox",[0,0,W,H]); const g=svg.append("g"); const byNode={};
+    feats.forEach(f=>{ byNode[+f.id]=g.append("path").attr("d",path(f)).attr("class","geo static"); });
+    const zoom=d3.zoom().scaleExtent([1,8]).on("zoom",ev=>g.attr("transform",ev.transform)); svg.call(zoom);
+    const mw=h("div",{class:"mapwrap"}); mw.appendChild(svg.node());
+    mw.appendChild(h("div",{class:"zoomctl"},h("button",{onclick:()=>svg.transition().call(zoom.scaleBy,1.6)},"+"),h("button",{onclick:()=>svg.transition().call(zoom.scaleBy,.62)},"−")));
+    host.innerHTML=""; host.appendChild(mw);
+    repaint=()=>{ guesses.forEach(c=>{ const p=byNode[c.id]; if(p)p.style("fill",c.a3===target.a3?"var(--good)":heat(c._km)); }); };
+    repaint(); setTimeout(()=>ac.focus(),50);
+  }).catch(()=>{ host.innerHTML=""; host.appendChild(mapError(()=>globle(clearView()))); });
+  refreshBar();
+}
+
+/* ========================================================= TRAVLE (land route) */
+function bfsPath(a,b){ const q=[[a]],seen={}; seen[a]=1;
+  while(q.length){ const p=q.shift(),last=p[p.length-1]; if(last===b)return p;
+    for(const n of ((byA3[last]&&byA3[last].bord)||[])){ if(byA3[n]&&!seen[n]){seen[n]=1;q.push(p.concat(n));} } } return null; }
+function travle(view){
+  document.title="Travle — GeoGames";
+  view.appendChild(pageHead("Travle","Build a land route from start to destination. Each country you name must share a border with the last one placed."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  let start,end,par; const pool=C.filter(c=>c.bord&&c.bord.length);
+  for(let t=0;t<500;t++){ start=randOf(pool); const dist={},q=[start.a3]; dist[start.a3]=0;
+    while(q.length){ const u=q.shift(); for(const n of (byA3[u].bord||[])){ if(byA3[n]&&dist[n]==null){dist[n]=dist[u]+1;q.push(n);} } }
+    const cands=Object.keys(dist).filter(k=>dist[k]>=3&&dist[k]<=6); if(cands.length){ end=byA3[cands[Math.floor(Math.random()*cands.length)]]; par=dist[end.a3]; break; } }
+  let cur=start,used=[start],done=false;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const routeBox=h("div",{class:"row-wrap"}); panel.appendChild(routeBox);
+  const acHost=h("div"); panel.appendChild(acHost);
+  const foot=h("div",{class:"row-wrap"}); panel.appendChild(foot);
+  const ac=autocomplete(countrySource,s=>guess(s.data),"Name the next country…");
+  function refresh(){ bar.innerHTML=""; bar.append(
+    h("div",{class:"chip"},h("div",{class:"k",text:"From"}),h("div",{class:"v",style:{fontSize:"14px"},text:start.n})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"To"}),h("div",{class:"v",style:{fontSize:"14px"},text:end.n})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Steps"}),h("div",{class:"v",text:used.length-1})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Par"}),h("div",{class:"v",text:par})));
+    routeBox.innerHTML=""; used.forEach(function(c,i){ routeBox.append(h("span",{class:"flex"},flagImg(c.a2,40,"","shadow"),h("span",{class:"kbd",text:c.n}))); if(i<used.length-1)routeBox.append(h("span",{class:"muted",text:"→"})); });
+    ac.input.disabled=done; }
+  function guess(c){ if(done)return; if(used.some(u=>u.a3===c.a3)){toast("Already in the route");return;}
+    if(!(cur.bord||[]).includes(c.a3)){ toast(c.n+" doesn't border "+cur.n); return; }
+    used.push(c); cur=c; refresh(); if(c.a3===end.a3)finish(true); }
+  function finish(win){ done=true; const s=stats("travle"); s.plays++; store.set("stat_travle",s); if(win)confetti();
+    modal({emoji:win?"🧭":"🏁",title:win?"Arrived!":"Route abandoned",sub:win?("Reached "+end.n+" in "+(used.length-1)+" steps (par "+par+").") : ("Shortest route was "+par+" steps."),
+      node:win?chipRow([["Steps",used.length-1],["Par",par]]):null,
+      buttons:[{label:"New route",primary:true,fn:x=>{x();travle(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  acHost.appendChild(ac.wrap);
+  foot.append(
+    h("button",{class:"btn ghost small",onclick:()=>{ const p=bfsPath(cur.a3,end.a3); if(p&&p.length>1)toast("Try: "+byA3[p[1]].n); }},"💡 Hint"),
+    h("button",{class:"btn ghost small",onclick:()=>finish(false)},"Give up"));
+  refresh(); setTimeout(()=>ac.focus(),50);
+}
+
+/* ========================================================= CLUE HUNT (Countryle) */
+function magnitude(n){ if(n>=5e8)return "hundreds of millions"; if(n>=5e7)return "tens of millions"; if(n>=5e6)return "millions"; if(n>=5e5)return "hundreds of thousands"; if(n>=1e4)return "tens of thousands"; return "a few thousand"; }
+function areaMag(n){ if(n>=5e6)return "millions of km²"; if(n>=5e5)return "hundreds of thousands of km²"; if(n>=5e4)return "tens of thousands of km²"; if(n>=1e3)return "thousands of km²"; return "under 1,000 km²"; }
+function buildClues(c){ const b=(c.bord||[]).length; return [
+  "It's in "+c.reg+(c.sub?" — "+c.sub:"")+".",
+  c.ll?"It is landlocked.":"It has a coastline.",
+  "It borders "+b+" countr"+(b===1?"y":"ies")+".",
+  "Its population is in the "+magnitude(c.pop)+".",
+  "Its area is in the "+areaMag(c.area)+".",
+  "Its capital is "+(c.cap||"—").split(" ")[0][0]+"… (starts with that letter).",
+  "The country's name starts with '"+c.n[0]+"'."]; }
+function clue(view){
+  document.title="Clue Hunt — GeoGames";
+  view.appendChild(pageHead("Clue Hunt","Work out the mystery country. A new clue appears with each wrong guess — solve it in as few as you can."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  let target=randOf(C.filter(c=>c.cap)), shown=1, tries=0, done=false; const clues=buildClues(target);
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const clueBox=h("div",{class:"stack"}); panel.appendChild(clueBox);
+  const acHost=h("div"); panel.appendChild(acHost);
+  const foot=h("div",{class:"row-wrap"}); panel.appendChild(foot);
+  const ac=autocomplete(countrySource,s=>guess(s.data),"Guess the country…");
+  function refresh(){ bar.innerHTML=""; bar.append(
+    h("div",{class:"chip"},h("div",{class:"k",text:"Clues"}),h("div",{class:"v",text:shown+"/"+clues.length})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Guesses"}),h("div",{class:"v",text:tries})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:stats("clue").streak})));
+    clueBox.innerHTML=""; clues.slice(0,shown).forEach((cl,i)=>clueBox.appendChild(h("div",{class:"guess"},h("span",{class:"idx",style:{background:"var(--primary)"},text:String(i+1)}),h("span",{class:"gname",text:cl})))); ac.input.disabled=done; }
+  function guess(c){ if(done)return; tries++;
+    if(c.a3===target.a3){ done=true; const s=setStreak("clue",stats("clue").streak+1); refresh(); confetti();
+      modal({emoji:"🕵️",title:"Solved!",sub:target.n+" — "+tries+" guesses, "+shown+" clues.",node:h("div",{class:"center"},flagImg(target.a2,320,"","shadow")),
+        buttons:[{label:"Next",primary:true,fn:x=>{x();clue(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+    else { toast("Not "+c.n); if(shown<clues.length)shown++; refresh(); } }
+  function giveup(){ done=true; setStreak("clue",0); refresh();
+    modal({emoji:"🙈",title:"It was "+target.n,node:h("div",{class:"center"},flagImg(target.a2,320,"","shadow")),buttons:[{label:"Next",primary:true,fn:x=>{x();clue(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  acHost.appendChild(ac.wrap);
+  foot.append(h("button",{class:"btn ghost small",onclick:()=>{ if(shown<clues.length){shown++;refresh();} else toast("No more clues!"); }},"➕ Reveal a clue"),h("button",{class:"btn ghost small",onclick:giveup},"Give up"));
+  refresh(); setTimeout(()=>ac.focus(),50);
+}
+
+/* ========================================================= COUNTRIES OF THE WORLD */
+function mmss(s){ return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+function nameall(view){
+  document.title="Countries of the World — GeoGames";
+  view.appendChild(pageHead("Countries of the World","Name as many of the world's 194 countries as you can in five minutes."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  const total=C.length; let found={},count=0,timeLeft=300,timer=null,started=false;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const prog=h("div",{class:"prog"},h("i",{style:{width:"0%"}})); panel.appendChild(prog);
+  const acHost=h("div"); panel.appendChild(acHost);
+  panel.appendChild(h("p",{class:"muted small",text:"The 5:00 timer starts on your first correct answer."}));
+  const foundBox=h("div",{class:"row-wrap"}); panel.appendChild(foundBox);
+  const ac=autocomplete(countrySource,s=>add(s.data),"Type a country…"); acHost.appendChild(ac.wrap);
+  function refresh(){ bar.innerHTML=""; bar.append(
+    h("div",{class:"chip"},h("div",{class:"k",text:"Found"}),h("div",{class:"v",text:count+"/"+total})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Time"}),h("div",{class:"v",text:mmss(Math.max(0,timeLeft))})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("nameall").best})));
+    prog.firstChild.style.width=(count/total*100)+"%"; }
+  function add(c){ if(found[c.a3]){toast("Already found "+c.n);return;} if(!started)start();
+    found[c.a3]=1; count++; foundBox.appendChild(h("span",{class:"flex"},flagImg(c.a2,40,"","shadow"),h("span",{class:"kbd",text:c.n}))); refresh(); if(count===total)end(); }
+  function start(){ started=true; timer=setInterval(()=>{ timeLeft--; refresh(); if(timeLeft<=0)end(); },1000); }
+  function end(){ if(timer)clearInterval(timer); timer=null; ac.input.disabled=true; const s=saveScore("nameall",count);
+    modal({emoji:count===total?"🏆":"⏱️",title:count===total?"All 194!":"Time!",sub:"You named "+count+" of "+total+".",share:"🌐 GeoGames — I named "+count+"/"+total+" countries of the world!",node:chipRow([["Found",count],["Missed",total-count],["Best",s.best]]),
+      buttons:[{label:"Play again",primary:true,fn:x=>{x();nameall(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  refresh(); setTimeout(()=>ac.focus(),50);
+  return ()=>{ if(timer)clearInterval(timer); };
+}
+
+/* ========================================================= REGION MAP QUIZ */
+const REGIONS=[["Africa","🦁"],["Europe","🏰"],["Asia","🐉"],["Americas","🗽"],["Oceania","🏝️"]];
+function region(view){
+  document.title="Region Map Quiz — GeoGames";
+  view.appendChild(pageHead("Region Map Quiz","Pick a region, then click each country as it's called out."));
+  const wrap=h("div",{class:"stack"}); view.appendChild(wrap);
+  const pick=h("div",{class:"grid"}); wrap.appendChild(pick);
+  REGIONS.forEach(([r,em])=>{ const n=C.filter(c=>c.reg===r).length;
+    pick.appendChild(h("a",{class:"gcard",style:{cursor:"pointer"},onclick:()=>play(r)},h("span",{class:"em",text:em}),h("h3",{text:r}),h("p",{text:n+" countries to find"}))); });
+  function play(r){
+    const v=clearView();
+    v.appendChild(h("a",{class:"back",style:{cursor:"pointer"},onclick:()=>region(clearView())},"← Regions"));
+    v.appendChild(h("div",{class:"page-head"},h("h1",{text:r}),h("p",{text:"Click each country when it's named."})));
+    const inner=h("div",{class:"stack"}); v.appendChild(inner);
+    const bar=h("div",{class:"chips"}); inner.appendChild(bar);
+    const host=h("div"); inner.appendChild(host); host.appendChild(loading());
+    let score=0,round=0,cur=null,locked=false,queue=[],RT=0;
+    const targets=C.filter(c=>c.reg===r&&byId[c.id]);
+    loadTopo(WORLD_URL,"countries").then(geo=>{
+      const ids=new Set(targets.map(c=>c.id));
+      const all=geo.features.filter(f=>byId[+f.id]);
+      const regionFeats=all.filter(f=>ids.has(+f.id));
+      const W=960,H=520; const proj=d3.geoNaturalEarth1().fitExtent([[2,2],[W-2,H-2]],{type:"FeatureCollection",features:all});
+      const path=d3.geoPath(proj); const svg=d3.create("svg").attr("viewBox",[0,0,W,H]); const g=svg.append("g"); const byNode={};
+      all.forEach(f=>{ const inR=ids.has(+f.id); const p=g.append("path").attr("d",path(f)).attr("class","geo"+(inR?"":" static")); if(inR){p.on("click",()=>click(+f.id,p));} else {p.style("opacity",0.32).style("pointer-events","none");} byNode[+f.id]=p; });
+      const zoom=d3.zoom().scaleExtent([1,12]).on("zoom",ev=>g.attr("transform",ev.transform)); svg.call(zoom);
+      try{ const b=path.bounds({type:"FeatureCollection",features:regionFeats}); const dx=b[1][0]-b[0][0],dy=b[1][1]-b[0][1],cx=(b[0][0]+b[1][0])/2,cy=(b[0][1]+b[1][1])/2;
+        const k=Math.max(1,Math.min(8,0.82/Math.max(dx/W,dy/H))); svg.call(zoom.transform,d3.zoomIdentity.translate(W/2-k*cx,H/2-k*cy).scale(k)); }catch(e){}
+      const mw=h("div",{class:"mapwrap"}); mw.appendChild(svg.node());
+      mw.appendChild(h("div",{class:"zoomctl"},h("button",{onclick:()=>svg.transition().call(zoom.scaleBy,1.6)},"+"),h("button",{onclick:()=>svg.transition().call(zoom.scaleBy,.62)},"−")));
+      host.innerHTML=""; host.appendChild(mw);
+      queue=shuffle(targets); RT=queue.length;
+      function refreshBar(){ bar.innerHTML=""; bar.append(
+        cur?h("div",{class:"chip"},h("div",{class:"k",text:"Find"}),h("div",{class:"v",style:{fontSize:"15px"},text:cur.n})):h("div",null),
+        h("div",{class:"chip"},h("div",{class:"k",text:"Score"}),h("div",{class:"v",text:score})),
+        h("div",{class:"chip"},h("div",{class:"k",text:"Round"}),h("div",{class:"v",text:Math.min(round,RT)+"/"+RT})),
+        h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("region").best}))); }
+      function click(id,p){ if(locked||!cur)return; locked=true; round++;
+        if(id===cur.id){score++;p.classed("right",true);} else {p.classed("wrong",true); byNode[cur.id]&&byNode[cur.id].classed("reveal",true);} refreshBar();
+        setTimeout(()=>{ p.classed("right",false).classed("wrong",false); byNode[cur.id]&&byNode[cur.id].classed("reveal",false); if(round>=RT)end(); else next(); },700); }
+      function next(){ locked=false; cur=queue[round]; refreshBar(); }
+      function end(){ const s=saveScore("region",score);
+        modal({emoji:score===RT?"🌟":"🗺️",title:r+" complete",sub:"You found "+score+" of "+RT+".",node:chipRow([["Score",score],["Best",s.best]]),
+          buttons:[{label:"Play again",primary:true,fn:x=>{x();play(r);}},{label:"Regions",fn:x=>{x();region(clearView());}}]}); }
+      next();
+    }).catch(()=>{ host.innerHTML=""; host.appendChild(mapError(()=>play(r))); });
+  }
+}
+
+/* ========================================================= RANK IT (ordering) */
+function rankit(view){
+  document.title="Rank It — GeoGames";
+  view.appendChild(pageHead("Rank It","Put the five countries in order — largest first. Switch between population and land area."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  let metric=store.get("rank_metric","pop"),streak=0,picks=[],set=[];
+  const top=h("div",{class:"row-wrap",style:{justifyContent:"space-between"}});
+  const seg=h("div",{class:"seg"},h("button",{onclick:()=>{metric="pop";store.set("rank_metric",metric);round();}},"Population"),h("button",{onclick:()=>{metric="area";store.set("rank_metric",metric);round();}},"Area"));
+  const bar=h("div",{class:"chips"}); top.append(seg,bar); panel.appendChild(top);
+  const instr=h("p",{class:"muted small"}); panel.appendChild(instr);
+  const cardsBox=h("div",{class:"stack"}); panel.appendChild(cardsBox);
+  function val(c){return metric==="pop"?c.pop:c.area;} function poolf(){return C.filter(c=>val(c)>0);}
+  function setSeg(){seg.children[0].className=metric==="pop"?"on":"";seg.children[1].className=metric==="area"?"on":"";}
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("rankit").best}))); }
+  function round(){ setSeg(); refreshBar(); picks=[]; set=sample(poolf(),5); instr.textContent="Click the countries from LARGEST to smallest "+(metric==="pop"?"population":"area")+"."; renderCards(); }
+  function renderCards(){ cardsBox.innerHTML=""; set.forEach(c=>{ const idx=picks.indexOf(c),picked=idx>=0;
+    cardsBox.appendChild(h("button",{class:"opt",disabled:picked,style:{display:"flex",alignItems:"center",gap:"12px",justifyContent:"flex-start",opacity:picked?.45:1},onclick:()=>pick(c)},
+      h("span",{style:{width:"24px",fontWeight:"800",color:"var(--primary)"},text:picked?(idx+1)+".":"•"}),flagImg(c.a2,40,"","shadow"),h("span",{text:c.n}))); }); }
+  function pick(c){ picks.push(c); if(picks.length<5)renderCards(); else finish(); }
+  function finish(){ const correct=set.slice().sort((a,b)=>val(b)-val(a)); const ok=picks.every((c,i)=>c.a3===correct[i].a3);
+    if(ok){ streak++; setStreak("rankit",streak); }
+    cardsBox.innerHTML=""; correct.forEach((c,i)=>{ const up=picks.indexOf(c)+1,good=up===i+1;
+      cardsBox.appendChild(h("div",{class:"guess"+(good?" correct":"")},h("span",{style:{width:"24px",fontWeight:"800"},text:(i+1)+"."}),flagImg(c.a2,40,"","shadow"),h("span",{class:"gname",text:c.n}),h("span",{class:"prox",text:fmt(val(c))}))); });
+    setTimeout(()=>{ modal({emoji:ok?"🎯":"📊",title:ok?"Perfect order!":"Not quite",sub:ok?("Streak of "+streak+"!"):"Study the order and try again.",node:chipRow([["Streak",streak],["Best",stats("rankit").best]]),
+      buttons:[{label:"Next round",primary:true,fn:x=>{x(); if(!ok)streak=0; round();}},{label:"Home",fn:()=>nav("")}]}); },650); }
+  round();
+}
+
+/* ========================================================= NEIGHBOURS */
+function neighbours(view){
+  document.title="Neighbours — GeoGames";
+  view.appendChild(pageHead("Neighbours","Name every country that shares a land border with the target. Find them all to move on."));
+  const panel=h("div",{class:"panel stack"}); view.appendChild(panel);
+  let streak=0,cur,need,found;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const qBox=h("div",{class:"center"}); panel.appendChild(qBox);
+  const acHost=h("div"); panel.appendChild(acHost);
+  const foundBox=h("div",{class:"row-wrap"}); panel.appendChild(foundBox);
+  const foot=h("div",{class:"row-wrap"}); panel.appendChild(foot);
+  const ac=autocomplete(countrySource,s=>guess(s.data),"Name a bordering country…");
+  function newRound(){ cur=randOf(C.filter(c=>c.bord&&c.bord.length>=2)); need=cur.bord.map(a=>byA3[a]).filter(Boolean); found=[]; render(); }
+  function render(){ bar.innerHTML=""; bar.append(
+    h("div",{class:"chip"},h("div",{class:"k",text:"Found"}),h("div",{class:"v",text:found.length+"/"+need.length})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),
+    h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("neighbours").best})));
+    qBox.innerHTML=""; qBox.append(flagImg(cur.a2,160,"","shadow"),h("h2",{style:{margin:"4px 0"},text:cur.n}),h("p",{class:"muted",text:"Name its "+need.length+" neighbour"+(need.length===1?"":"s")}));
+    foundBox.innerHTML=""; found.forEach(function(c){ foundBox.append(h("span",{class:"flex"},flagImg(c.a2,40,"","shadow"),h("span",{class:"kbd",text:c.n}))); }); }
+  function guess(c){ if(found.some(f=>f.a3===c.a3)){toast("Already named");return;}
+    if(need.some(n=>n.a3===c.a3)){ found.push(c); render(); if(found.length===need.length){ streak++; setStreak("neighbours",streak); toast("All found! 🎉"); setTimeout(newRound,750); } }
+    else toast(c.n+" doesn't border "+cur.n); }
+  function giveup(){ const missed=need.filter(n=>!found.some(f=>f.a3===n.a3)); streak=0; setStreak("neighbours",0);
+    modal({emoji:"🙈",title:cur.n+"'s neighbours",sub:"Missed: "+(missed.map(m=>m.n).join(", ")||"none"),buttons:[{label:"New country",primary:true,fn:x=>{x();newRound();}},{label:"Home",fn:()=>nav("")}]}); }
+  acHost.appendChild(ac.wrap);
+  foot.append(h("button",{class:"btn ghost small",onclick:()=>{const m=need.filter(n=>!found.some(f=>f.a3===n.a3));toast(m.length?("Try: "+randOf(m).n):"All found");}},"💡 Hint"),h("button",{class:"btn ghost small",onclick:giveup},"Give up"));
+  newRound(); setTimeout(()=>ac.focus(),50);
+}
+
+/* ========================================================= CONTINENT MATCH */
+const CONTS=["Africa","Americas","Asia","Europe","Oceania"];
+function continent(view){
+  document.title="Continent Match — GeoGames";
+  view.appendChild(pageHead("Continent Match","Which continent is each country in? Quick-fire — one miss ends the streak."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,cur=null,locked=false;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const qBox=h("div",{class:"center"}); panel.appendChild(qBox);
+  const opts=h("div",{class:"options",style:{width:"100%",maxWidth:"460px"}}); panel.appendChild(opts);
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("continent").best}))); }
+  function next(){ locked=false; cur=randOf(C); qBox.innerHTML=""; qBox.append(flagImg(cur.a2,160,"","shadow"),h("h2",{style:{margin:"4px 0"},text:cur.n})); opts.innerHTML="";
+    CONTS.forEach(ct=>opts.appendChild(h("button",{class:"opt",onclick:e=>answer(ct,e.target)},ct))); refreshBar(); }
+  function answer(ct,btn){ if(locked)return; locked=true; [...opts.children].forEach(b=>b.disabled=true);
+    if(ct===cur.reg){ streak++; setStreak("continent",streak); btn.classList.add("right"); setTimeout(next,360); }
+    else { btn.classList.add("wrong"); [...opts.children].forEach(b=>{if(b.textContent===cur.reg)b.classList.add("right");}); setTimeout(end,950); } }
+  function end(){ modal({emoji:streak>=10?"🏆":"🌎",title:"Streak over",sub:cur.n+" is in "+cur.reg+".",node:chipRow([["Streak",streak],["Best",stats("continent").best]]),buttons:[{label:"Play again",primary:true,fn:x=>{x();continent(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  next();
+}
+
+/* ========================================================= CAPITAL -> COUNTRY */
+function capcountry(view){
+  document.title="Capital → Country — GeoGames";
+  view.appendChild(pageHead("Capital → Country","We name a capital city. You name the country it belongs to."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,cur=null,locked=false,mode=store.get("cc_mode","choose");
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const seg=h("div",{class:"seg"},h("button",{onclick:()=>{mode="choose";store.set("cc_mode",mode);next();}},"Multiple choice"),h("button",{onclick:()=>{mode="type";store.set("cc_mode",mode);next();}},"Type it")); panel.appendChild(seg);
+  const qBox=h("div",{class:"center"}); panel.appendChild(qBox);
+  const area=h("div",{style:{width:"100%",maxWidth:"460px"}}); panel.appendChild(area);
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("capcountry").best}))); }
+  function setSeg(){ seg.children[0].className=mode==="choose"?"on":""; seg.children[1].className=mode==="type"?"on":""; }
+  function next(){ setSeg(); locked=false; cur=randOf(CAPITALS);
+    qBox.innerHTML=""; qBox.append(h("h2",{style:{margin:"4px 0",fontSize:"30px"},text:cur.cap}),h("p",{class:"muted",text:"is the capital of…"}));
+    area.innerHTML="";
+    if(mode==="choose"){ const opts=h("div",{class:"options"}); shuffle([cur,...sample(CAPITALS.filter(c=>c.a3!==cur.a3),3)]).forEach(ch=>opts.appendChild(h("button",{class:"opt",onclick:e=>answer(ch.a3,e.target)},ch.n))); area.appendChild(opts); }
+    else { const ac=autocomplete(countrySource,s=>answer(s.data.a3,null),"Type the country…"); area.appendChild(ac.wrap); setTimeout(()=>ac.focus(),50); }
+    refreshBar(); }
+  function answer(a3,btn){ if(locked)return; locked=true; const correct=a3===cur.a3;
+    if(mode==="choose"){ [...area.querySelectorAll(".opt")].forEach(b=>{b.disabled=true; if(b.textContent===cur.n)b.classList.add("right");}); if(btn&&!correct)btn.classList.add("wrong"); }
+    if(correct){ streak++; setStreak("capcountry",streak); toast("✓ "+cur.n); setTimeout(next,mode==="choose"?550:250); } else end(); }
+  function end(){ modal({emoji:streak>=10?"🏆":"🙈",title:"Streak over",sub:cur.cap+" is the capital of "+cur.n+".",node:chipRow([["Streak",streak],["Best",stats("capcountry").best]]),buttons:[{label:"Try again",primary:true,fn:x=>{x();capcountry(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  next();
+}
+
+/* ========================================================= FLAG MATCH (memory) */
+function memory(view){
+  document.title="Flag Match — GeoGames";
+  view.appendChild(pageHead("Flag Match","Flip the cards to pair each flag with its country. Match all six in as few moves as you can."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const grid=h("div",{class:"mgrid"}); panel.appendChild(grid);
+  const picks=sample(C.filter(c=>c.a2),6);
+  let cards=[]; picks.forEach(c=>{cards.push({a3:c.a3,c:c,kind:"flag"});cards.push({a3:c.a3,c:c,kind:"name"});}); cards=shuffle(cards);
+  let flipped=[],matched={},moves=0,lock=false;
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Moves"}),h("div",{class:"v",text:moves})),h("div",{class:"chip"},h("div",{class:"k",text:"Pairs"}),h("div",{class:"v",text:(Object.keys(matched).length/2)+"/6"})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:store.get("memory_best",0)||"—"}))); }
+  function render(){ grid.innerHTML=""; cards.forEach((card,i)=>{ const up=flipped.includes(i)||matched[i];
+    const el=h("div",{class:"mcard"+(matched[i]?" matched":"")+(up?" face":""),onclick:()=>click(i)});
+    if(up){ if(card.kind==="flag")el.appendChild(flagImg(card.c.a2,160)); else el.appendChild(h("span",{text:card.c.n})); }
+    else el.appendChild(h("span",{class:"back",text:"?"}));
+    grid.appendChild(el); }); }
+  function click(i){ if(lock||matched[i]||flipped.includes(i))return; flipped.push(i); render();
+    if(flipped.length===2){ moves++; lock=true; const a=flipped[0],b=flipped[1];
+      if(cards[a].a3===cards[b].a3&&cards[a].kind!==cards[b].kind){ matched[a]=matched[b]=1; flipped=[]; lock=false; render(); refreshBar(); if(Object.keys(matched).length===12)win(); }
+      else setTimeout(()=>{ flipped=[]; lock=false; render(); },850);
+      refreshBar(); } }
+  function win(){ const b=store.get("memory_best",0); if(!b||moves<b)store.set("memory_best",moves); confetti();
+    modal({emoji:"🃏",title:"Board cleared!",sub:"You matched all six flags in "+moves+" moves.",node:chipRow([["Moves",moves],["Best",store.get("memory_best",0)]]),buttons:[{label:"Play again",primary:true,fn:x=>{x();memory(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  refreshBar(); render();
+}
+
+/* ========================================================= ODD ONE OUT */
+function odd(view){
+  document.title="Odd One Out — GeoGames";
+  view.appendChild(pageHead("Odd One Out","Three of these countries share a continent. Tap the one that doesn't belong."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,locked=false,oddC=null;
+  const regions=[...new Set(C.map(c=>c.reg))];
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const opts=h("div",{class:"options",style:{width:"100%",maxWidth:"520px"}}); panel.appendChild(opts);
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("odd").best}))); }
+  function next(){ locked=false; let A,B; do{A=randOf(regions);}while(C.filter(c=>c.reg===A).length<3); do{B=randOf(regions);}while(B===A);
+    const three=sample(C.filter(c=>c.reg===A),3); oddC=randOf(C.filter(c=>c.reg===B)); const set=shuffle(three.concat([oddC]));
+    opts.innerHTML=""; set.forEach(c=>opts.appendChild(h("button",{class:"opt",style:{display:"flex",alignItems:"center",gap:"10px",justifyContent:"center"},onclick:e=>answer(c,e.currentTarget)},flagImg(c.a2,40,"","shadow"),h("span",{text:c.n})))); refreshBar(); }
+  function answer(c,btn){ if(locked)return; locked=true;
+    if(c.a3===oddC.a3){ streak++; setStreak("odd",streak); btn.classList.add("right"); setTimeout(next,450); }
+    else { btn.classList.add("wrong"); [...opts.children].forEach(b=>{b.disabled=true; if(b.textContent.indexOf(oddC.n)>=0)b.classList.add("right");}); setTimeout(end,1000); } }
+  function end(){ modal({emoji:streak>=10?"🏆":"🧠",title:"Streak over",sub:oddC.n+" was the odd one out — it's in "+oddC.reg+".",node:chipRow([["Streak",streak],["Best",stats("odd").best]]),buttons:[{label:"Again",primary:true,fn:x=>{x();odd(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  next();
+}
+
+/* ========================================================= POPULATION GUESS */
+function popguess(view){
+  document.title="Population Guess — GeoGames";
+  view.appendChild(pageHead("Population Guess","Estimate the country's population. Stay within 25% to keep the streak alive."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,cur=null;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const qBox=h("div",{class:"center"}); panel.appendChild(qBox);
+  const form=h("div",{class:"row-wrap",style:{justifyContent:"center",width:"100%"}}); panel.appendChild(form);
+  const inp=h("input",{class:"ac-input",type:"number",placeholder:"e.g. 5000000",style:{maxWidth:"260px"}});
+  form.append(inp,h("button",{class:"btn primary",onclick:submit},"Guess")); inp.addEventListener("keydown",e=>{if(e.key==="Enter")submit();});
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("popguess").best}))); }
+  function next(){ cur=randOf(C); qBox.innerHTML=""; qBox.append(flagImg(cur.a2,160,"","shadow"),h("h2",{style:{margin:"4px 0"},text:cur.n}),h("p",{class:"muted",text:"What's its population?"})); inp.value=""; refreshBar(); setTimeout(()=>inp.focus(),50); }
+  function submit(){ const g=+inp.value; if(!g||g<0){toast("Enter a number");return;} const err=Math.abs(g-cur.pop)/cur.pop*100;
+    if(err<=(HARD?15:25)){ streak++; setStreak("popguess",streak); toast("✓ within "+Math.round(err)+"% — actual "+fmt(cur.pop)); next(); }
+    else modal({emoji:"👥",title:"Off the mark",sub:cur.n+" has "+fmt(cur.pop)+" people. You guessed "+fmt(g)+" ("+Math.round(err)+"% off).",node:chipRow([["Streak",streak],["Best",stats("popguess").best]]),buttons:[{label:"Play again",primary:true,fn:x=>{x();popguess(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  next();
+}
+
+/* ========================================================= DISTANCE GUESS */
+function distance(view){
+  document.title="Distance Guess — GeoGames";
+  view.appendChild(pageHead("Distance Guess","How far apart are these two countries? Guess within 20% to keep your streak."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,a=null,b=null,km=0;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const qBox=h("div",{class:"hl",style:{width:"100%",maxWidth:"560px"}}); panel.appendChild(qBox);
+  const form=h("div",{class:"row-wrap",style:{justifyContent:"center",width:"100%"}}); panel.appendChild(form);
+  const inp=h("input",{class:"ac-input",type:"number",placeholder:"distance in km",style:{maxWidth:"260px"}});
+  form.append(inp,h("button",{class:"btn primary",onclick:submit},"Guess")); inp.addEventListener("keydown",e=>{if(e.key==="Enter")submit();});
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("distance").best}))); }
+  function next(){ a=randOf(C); do{b=randOf(C);}while(b.a3===a.a3); km=haversine(a,b);
+    qBox.innerHTML=""; qBox.append(h("div",{class:"side"},flagImg(a.a2,320,"","shadow"),h("div",{class:"cname",text:a.n})),h("div",{class:"vs",text:"↔"}),h("div",{class:"side"},flagImg(b.a2,320,"","shadow"),h("div",{class:"cname",text:b.n})));
+    inp.value=""; refreshBar(); setTimeout(()=>inp.focus(),50); }
+  function submit(){ const g=+inp.value; if(!g||g<0){toast("Enter a number");return;} const err=Math.abs(g-km)/km*100;
+    if(err<=(HARD?12:20)){ streak++; setStreak("distance",streak); toast("✓ "+Math.round(err)+"% off — actual "+fmt(km)+" km"); next(); }
+    else modal({emoji:"📏",title:"Not close enough",sub:a.n+" to "+b.n+" is "+fmt(km)+" km. You guessed "+fmt(g)+" ("+Math.round(err)+"% off).",node:chipRow([["Streak",streak],["Best",stats("distance").best]]),buttons:[{label:"Play again",primary:true,fn:x=>{x();distance(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  next();
+}
+
+/* ========================================================= TRUE NORTH */
+function north(view){
+  document.title="True North — GeoGames";
+  view.appendChild(pageHead("True North","Two countries, one question — which one lies farther north, or south?"));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,a=null,b=null,askNorth=true,locked=false;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const q=h("h2",{style:{textAlign:"center"}}); panel.appendChild(q);
+  const opts=h("div",{class:"options",style:{width:"100%",maxWidth:"520px"}}); panel.appendChild(opts);
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("north").best}))); }
+  function next(){ locked=false; a=randOf(C); do{b=randOf(C);}while(b.a3===a.a3||b.lat===a.lat); askNorth=Math.random()<0.5;
+    q.textContent="Which country is farther "+(askNorth?"NORTH ⬆":"SOUTH ⬇")+"?"; opts.innerHTML="";
+    [a,b].forEach(c=>opts.appendChild(h("button",{class:"opt",style:{display:"flex",alignItems:"center",gap:"10px",justifyContent:"center"},onclick:e=>answer(c,e.currentTarget)},flagImg(c.a2,40,"","shadow"),h("span",{text:c.n})))); refreshBar(); }
+  function answer(c,btn){ if(locked)return; locked=true; const other=c===a?b:a; const correct=askNorth?(c.lat>other.lat):(c.lat<other.lat);
+    if(correct){ streak++; setStreak("north",streak); btn.classList.add("right"); setTimeout(next,450); }
+    else { btn.classList.add("wrong"); setTimeout(end,950); } }
+  function end(){ modal({emoji:streak>=10?"🏆":"🧭",title:"Streak over",sub:a.n+" is at "+a.lat+"°, "+b.n+" at "+b.lat+"°.",node:chipRow([["Streak",streak],["Best",stats("north").best]]),buttons:[{label:"Again",primary:true,fn:x=>{x();north(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  next();
+}
+
+/* ========================================================= UNSCRAMBLE */
+function scramble(view){
+  document.title="Unscramble — GeoGames";
+  view.appendChild(pageHead("Unscramble","Rearrange the letters to name the country. There's a continent hint to help you."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,cur=null;
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const scr=h("h2",{style:{letterSpacing:"6px",textTransform:"uppercase",fontSize:"clamp(24px,5vw,36px)",wordBreak:"break-word",textAlign:"center"}}); panel.appendChild(scr);
+  const hint=h("p",{class:"muted"}); panel.appendChild(hint);
+  const acHost=h("div",{style:{width:"100%",maxWidth:"460px"}}); panel.appendChild(acHost);
+  const foot=h("div",{class:"row-wrap"}); panel.appendChild(foot);
+  function scr1(s){ const L=s.replace(/[^A-Za-z]/g,"").split(""); let o; do{o=shuffle(L).join("");}while(L.length>1&&o.toLowerCase()===L.join("").toLowerCase()); return o; }
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("scramble").best}))); }
+  function next(){ cur=randOf(C.filter(c=>c.n.replace(/[^A-Za-z]/g,"").length<=13)); scr.textContent=scr1(cur.n); hint.textContent="Hint: "+cur.reg+" · "+cur.n.replace(/[^A-Za-z]/g,"").length+" letters"; acHost.innerHTML="";
+    const ac=autocomplete(countrySource,s=>answer(s.data),"Which country?"); acHost.appendChild(ac.wrap); refreshBar(); setTimeout(()=>ac.focus(),50); }
+  function answer(c){ if(c.a3===cur.a3){ streak++; setStreak("scramble",streak); toast("✓ "+cur.n); next(); } else toast("Not "+c.n); }
+  foot.append(h("button",{class:"btn ghost small",onclick:()=>{ toast("It was "+cur.n); streak=0; setStreak("scramble",0); next(); }},"Skip / reveal"));
+  next();
+}
+
+/* ========================================================= STATS & ACHIEVEMENTS */
+function bumpVisit(name){ try{ const v=store.get("visited",{}); v[name]=(v[name]||0)+1; store.set("visited",v); }catch(e){} }
+function best(id){ return stats(id).best||0; }
+function visits(id){ return (store.get("visited",{})[id]||0); }
+function overall(){ const v=store.get("visited",{}); const ids=Object.keys(v); const totalPlays=ids.reduce((a,k)=>a+(v[k]||0),0);
+  const gamesTried=ids.filter(k=>GAMES.some(g=>g.id===k)).length; let maxStreak=0;
+  GAMES.forEach(g=>{ const kind=g.stat||(["higherlower","capitals","borders"].includes(g.id)?"streak":""); if(kind==="streak")maxStreak=Math.max(maxStreak,best(g.id)); });
+  return {totalPlays,gamesTried,maxStreak}; }
+const ACHS=[
+  {em:"🎯",name:"First Steps",desc:"Play your very first game.",test:t=>t.totalPlays>=1},
+  {em:"🧭",name:"Explorer",desc:"Try 8 different games.",test:t=>t.gamesTried>=8},
+  {em:"🌍",name:"Globetrotter",desc:"Try all 24 games.",test:t=>t.gamesTried>=GAMES.length},
+  {em:"💯",name:"Centurion",desc:"Play 100 games in total.",test:t=>t.totalPlays>=100},
+  {em:"🔥",name:"On Fire",desc:"Reach a streak of 10.",test:t=>t.maxStreak>=10},
+  {em:"⚡",name:"Unstoppable",desc:"Reach a streak of 25.",test:t=>t.maxStreak>=25},
+  {em:"📝",name:"Cartographer",desc:"Name all 194 countries.",test:t=>best("nameall")>=194},
+  {em:"🏳️",name:"Vexillologist",desc:"Score 20+ in Flag Sprint.",test:t=>best("flags")>=20},
+  {em:"📅",name:"Daily Devotee",desc:"Play the Daily Challenge.",test:t=>visits("daily")>=1},
+  {em:"🗺️",name:"Pathfinder",desc:"Find 12+ in Find the Country.",test:t=>best("find")>=12},
+  {em:"🇺🇸",name:"State Scholar",desc:"Find 12+ US states.",test:t=>best("states")>=12},
+  {em:"🃏",name:"Sharp Memory",desc:"Clear Flag Match in 14 moves or fewer.",test:t=>{const b=store.get("memory_best",0);return b>0&&b<=14;}},
+];
+function statsPage(view){
+  document.title="Your Stats — GeoGames";
+  view.appendChild(pageHead("Your Stats & Achievements","Your progress across every game — saved in this browser, on this device."));
+  const t=overall(); const got=ACHS.filter(a=>a.test(t)).length;
+  view.appendChild(chipRow([["Games played",t.totalPlays],["Games tried",t.gamesTried+"/"+GAMES.length],["Best streak",t.maxStreak],["Badges",got+"/"+ACHS.length]]));
+  view.appendChild(h("h3",{style:{margin:"28px 0 12px"},text:"Achievements"}));
+  const ag=h("div",{class:"agrid"});
+  ACHS.forEach(a=>{ const on=a.test(t); ag.appendChild(h("div",{class:"ach"+(on?" on":"")},h("span",{class:"ae",text:a.em}),h("div",{style:{flex:"1"}},h("div",{class:"an",text:a.name}),h("div",{class:"ad",text:a.desc})),h("span",{class:on?"atick":"alock",text:on?"✓":"🔒"}))); });
+  view.appendChild(ag);
+  view.appendChild(h("h3",{style:{margin:"28px 0 12px"},text:"Best by game"}));
+  const tbl=h("div",{class:"btable"});
+  GAMES.forEach(g=>{ const s=stats(g.id); const kind=g.stat||(["flags","find","states"].includes(g.id)?"score":["higherlower","capitals","borders"].includes(g.id)?"streak":"played");
+    let val = g.id==="memory" ? (store.get("memory_best",0)?store.get("memory_best",0)+" moves":"—") : kind==="score" ? (best(g.id)+" best") : kind==="streak" ? (best(g.id)+" streak") : (visits(g.id)+" plays");
+    tbl.appendChild(h("a",{class:"brow",href:"#/"+g.id},h("span",{class:"bem",text:g.em}),h("span",{class:"bn",text:g.title}),h("span",{class:"bv",text:val}))); });
+  view.appendChild(tbl);
+  view.appendChild(h("h3",{style:{margin:"28px 0 12px"},text:"Settings"}));
+  const hardBtn=h("button",{class:"btn"+(HARD?" primary":"")});
+  function paintHard(){ hardBtn.className="btn"+(HARD?" primary":""); hardBtn.textContent=HARD?"🔥 Hard mode: ON":"Hard mode: OFF"; }
+  hardBtn.addEventListener("click",()=>{ HARD=!HARD; store.set("hard",HARD); paintHard(); toast(HARD?"✓ Hard mode on — fewer hints":"Hard mode off"); }); paintHard();
+  view.appendChild(h("div",{class:"row-wrap"},hardBtn,h("span",{class:"muted small",text:"Hides distance & proximity clues in Shapedle, Globle and Flagle, and tightens the tolerance on the estimate games."})));
+  view.appendChild(h("button",{class:"btn ghost small",style:{marginTop:"22px"},onclick:()=>{ if(confirm("Reset all your stats and achievements? This can't be undone.")){ Object.keys(localStorage).filter(k=>k.indexOf("gg_")===0&&k!=="gg_theme"&&k!=="gg_sfx"&&k!=="gg_cat"&&k!=="gg_hard").forEach(k=>localStorage.removeItem(k)); nav("stats"); } }},"Reset all progress"));
+}
+
+/* ========================================================= CURRENCY QUIZ */
+function currency(view){
+  document.title="Currency Quiz — GeoGames";
+  view.appendChild(pageHead("Currency Quiz","Which currency does each country use? Build the longest streak you can."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,cur=null,locked=false; const pool=C.filter(c=>c.cur);
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const qBox=h("div",{class:"center"}); panel.appendChild(qBox);
+  const opts=h("div",{class:"options",style:{width:"100%",maxWidth:"480px"}}); panel.appendChild(opts);
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("currency").best}))); }
+  function next(){ locked=false; cur=randOf(pool);
+    qBox.innerHTML=""; qBox.append(flagImg(cur.a2,160,"","shadow"),h("h2",{style:{margin:"4px 0"},text:cur.n}),h("p",{class:"muted",text:"uses which currency?"}));
+    const seen={}; seen[cur.cur]=1; const others=[]; for(const c of shuffle(pool)){ if(!seen[c.cur]){seen[c.cur]=1;others.push(c.cur);if(others.length>=3)break;} }
+    opts.innerHTML=""; shuffle([cur.cur].concat(others)).forEach(cc=>opts.appendChild(h("button",{class:"opt",onclick:e=>answer(cc,e.target)},cc))); refreshBar(); }
+  function answer(cc,btn){ if(locked)return; locked=true; [...opts.children].forEach(b=>b.disabled=true);
+    if(cc===cur.cur){ streak++; setStreak("currency",streak); btn.classList.add("right"); setTimeout(next,450); }
+    else { btn.classList.add("wrong"); [...opts.children].forEach(b=>{if(b.textContent===cur.cur)b.classList.add("right");}); setTimeout(end,1050); } }
+  function end(){ modal({emoji:streak>=10?"🏆":"💱",title:"Streak over",sub:cur.n+" uses the "+cur.cur+".",share:"💱 GeoGames Currency Quiz — I hit a streak of "+streak+"!",node:chipRow([["Streak",streak],["Best",stats("currency").best]]),buttons:[{label:"Again",primary:true,fn:x=>{x();currency(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  next();
+}
+
+/* ========================================================= LANGUAGE MATCH */
+function language(view){
+  document.title="Language Match — GeoGames";
+  view.appendChild(pageHead("Language Match","Which language is chiefly spoken in each country? Keep the streak alive."));
+  const panel=h("div",{class:"panel stack center"}); view.appendChild(panel);
+  let streak=0,cur=null,locked=false; const pool=C.filter(c=>c.lang);
+  const bar=h("div",{class:"chips"}); panel.appendChild(bar);
+  const qBox=h("div",{class:"center"}); panel.appendChild(qBox);
+  const opts=h("div",{class:"options",style:{width:"100%",maxWidth:"480px"}}); panel.appendChild(opts);
+  function refreshBar(){ bar.innerHTML=""; bar.append(h("div",{class:"chip"},h("div",{class:"k",text:"Streak"}),h("div",{class:"v",text:streak})),h("div",{class:"chip"},h("div",{class:"k",text:"Best"}),h("div",{class:"v",text:stats("language").best}))); }
+  function next(){ locked=false; cur=randOf(pool);
+    qBox.innerHTML=""; qBox.append(flagImg(cur.a2,160,"","shadow"),h("h2",{style:{margin:"4px 0"},text:cur.n}),h("p",{class:"muted",text:"chiefly speaks…"}));
+    const seen={}; seen[cur.lang]=1; const others=[]; for(const c of shuffle(pool)){ if(!seen[c.lang]){seen[c.lang]=1;others.push(c.lang);if(others.length>=3)break;} }
+    opts.innerHTML=""; shuffle([cur.lang].concat(others)).forEach(l=>opts.appendChild(h("button",{class:"opt",onclick:e=>answer(l,e.target)},l))); refreshBar(); }
+  function answer(l,btn){ if(locked)return; locked=true; [...opts.children].forEach(b=>b.disabled=true);
+    if(l===cur.lang){ streak++; setStreak("language",streak); btn.classList.add("right"); setTimeout(next,450); }
+    else { btn.classList.add("wrong"); [...opts.children].forEach(b=>{if(b.textContent===cur.lang)b.classList.add("right");}); setTimeout(end,1050); } }
+  function end(){ modal({emoji:streak>=10?"🏆":"🗣️",title:"Streak over",sub:cur.n+" chiefly speaks "+cur.lang+".",share:"🗣️ GeoGames Language Match — I hit a streak of "+streak+"!",node:chipRow([["Streak",streak],["Best",stats("language").best]]),buttons:[{label:"Again",primary:true,fn:x=>{x();language(clearView());}},{label:"Home",fn:()=>nav("")}]}); }
+  next();
+}
+
+/* ========================================================= ATLAS / LEARN MODE */
+function infoRow(k,v){ return h("div",{class:"inforow"},h("span",{class:"il",text:k}),h("span",{class:"iv",text:v})); }
+function atlas(view){
+  document.title="Atlas — GeoGames";
+  view.appendChild(pageHead("Atlas","Browse every country to study before you play — flag, capital, population, area and neighbours."));
+  let region="All",q=""; const REG=["All","Africa","Europe","Asia","Americas","Oceania"];
+  const search=h("input",{class:"search",type:"search",placeholder:"Search countries or capitals…",oninput:e=>{q=e.target.value.toLowerCase().trim();renderGrid();}});
+  const tabs=h("div",{class:"tabs"}); const grid=h("div",{class:"agridc"});
+  const stickybar=h("div",{class:"stickybar"},h("div",{class:"toolbar"},search),tabs);
+  function count(r){ return r==="All"?C.length:C.filter(c=>c.reg===r).length; }
+  function renderTabs(){ tabs.innerHTML=""; REG.forEach(r=>tabs.appendChild(h("button",{class:"tab"+(r===region?" on":""),onclick:()=>{region=r;renderTabs();renderGrid();}},r,h("span",{class:"tcount",text:count(r)})))); }
+  function renderGrid(){ grid.innerHTML="";
+    let list=C.filter(c=>(region==="All"||c.reg===region)&&(!q||c.n.toLowerCase().includes(q)||(c.cap||"").toLowerCase().includes(q)));
+    list=list.slice().sort((a,b)=>a.n.localeCompare(b.n));
+    if(!list.length){ grid.appendChild(h("p",{class:"muted",style:{gridColumn:"1/-1",textAlign:"center",padding:"24px"},text:"No countries match."})); return; }
+    list.forEach(c=>grid.appendChild(h("button",{class:"ccard",onclick:()=>detail(c)},flagImg(c.a2,320,"","shadow"),h("div",{class:"cn",text:c.n}),h("div",{class:"cc muted small",text:c.cap||"—"}))));
+  }
+  function detail(c){ const nb=(c.bord||[]).map(a=>byA3[a]).filter(Boolean);
+    modal({emoji:" ",title:c.n,
+      node:h("div",{class:"stack",style:{textAlign:"left"}},
+        h("div",{class:"center",style:{marginTop:"-6px"}},flagImg(c.a2,320,"","shadow")),
+        infoRow("Capital",c.cap||"—"), infoRow("Region",c.reg+(c.sub?" · "+c.sub:"")),
+        infoRow("Population",fmt(c.pop)), infoRow("Area",fmt(c.area)+" km²"),
+        infoRow("Coastline",c.ll?"Landlocked":"Has a coastline"),
+        h("div",null,h("div",{class:"il",style:{marginBottom:"6px"},text:"Neighbours ("+nb.length+")"}),
+          nb.length?h("div",{class:"row-wrap"},...nb.map(x=>h("span",{class:"flex"},flagImg(x.a2,40,"","shadow"),h("span",{class:"kbd",text:x.n}))))
+                   :h("span",{class:"muted small",text:"None — an island or isolated nation."}))),
+      buttons:[{label:"Close",primary:true,fn:x=>x()}]});
+  }
+  view.appendChild(stickybar); view.appendChild(grid); renderTabs(); renderGrid();
+}
+
+/* ========================================================= ROUTER */
+const routes={ "":home, atlas, shapedle, flagle, flags, capitals, find, higherlower, borders, states,
+  daily:(v)=>shapedle(v,{daily:true}), globle, travle, clue, nameall, region, rankit, neighbours, continent,
+  capcountry, memory, odd, popguess, distance, north, scramble, currency, language, stats:statsPage };
+let cleanup=null;
+function clearView(){ const v=$("#view"); v.innerHTML=""; return v; }
+function renderRoute(name){
+  if(typeof cleanup==="function"){ try{cleanup();}catch(e){} cleanup=null; }
+  if(name&&name!=="stats"&&GAMES.some(g=>g.id===name))bumpVisit(name);
+  const fn=routes[name]||home;
+  const v=clearView();
+  try{ cleanup=fn(v)||null; }catch(e){ console.error(e); v.appendChild(h("div",{class:"panel",text:"Something went wrong loading this game."})); }
+  window.scrollTo(0,0);
+}
+function currentName(){ let hash=""; try{ hash=location.hash||""; }catch(e){} return hash.replace(/^#\/?/,"").split("/")[0]; }
+// nav() drives rendering directly so it works even when the page is loaded from a
+// data:/file preview where changing location.hash is blocked by the browser.
+function nav(name){ renderRoute(name); try{ history.replaceState(null,"","#/"+name); }catch(e){} }
+function render(){ renderRoute(currentName()); }
+window.addEventListener("hashchange",render);
+// Intercept in-app links (#/...) and route via JS instead of a real hash change.
+document.addEventListener("click",function(e){
+  const a=e.target.closest?e.target.closest('a[href^="#/"]'):null;
+  if(a){ e.preventDefault(); nav(a.getAttribute("href").replace(/^#\/?/,"").split("/")[0]); }
+});
+
+/* theme */
+const themeBtn=$("#themeBtn");
+function applyTheme(t){ document.documentElement.dataset.theme=t; themeBtn.textContent=t==="dark"?"🌙":"☀️"; store.set("theme",t); }
+applyTheme(store.get("theme","light"));
+themeBtn.addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+const sfxBtn=$("#sfxBtn"); if(sfxBtn){ sfxBtn.textContent=SFX?"🔊":"🔇"; sfxBtn.addEventListener("click",toggleSfx); }
+
+/* offline detection */
+function checkOnline(){ $("#offline").classList.toggle("show",!navigator.onLine); }
+window.addEventListener("online",checkOnline); window.addEventListener("offline",checkOnline); checkOnline();
+
+/* boot */
+render();
+</script>
+</body>
+</html>
