@@ -421,6 +421,17 @@ function autocomplete(source, onPick, placeholder){
   return {wrap,input,focus:()=>input.focus()};
 }
 const countrySource=C.map(c=>({label:c.n,sub:c.reg,a2:c.a2,data:c}));
+// A blind text input with NO suggestion list — for games where showing matches while typing
+// would hand over the answer (e.g. recall-from-memory games). Submits only on Enter or the button.
+function plainInput(placeholder,onSubmit,buttonLabel){
+  const wrap=h("div",{class:"ac-wrap",style:{display:"flex",gap:"10px"}});
+  const input=h("input",{class:"ac-input",type:"text",placeholder:placeholder||"Type your answer…",autocomplete:"off",spellcheck:"false",style:{flex:"1"}});
+  const btn=h("button",{class:"btn primary",onclick:go},buttonLabel||"Enter");
+  wrap.append(input,btn);
+  function go(){ const v=input.value.trim(); if(!v)return; input.value=""; onSubmit(v); }
+  input.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); go(); } });
+  return {wrap,input,focus:()=>input.focus()};
+}
 
 /* ---------- topojson loading ---------- */
 const _cache={};
@@ -731,8 +742,7 @@ function capitals(view){
         opts.appendChild(h("button",{class:"opt",onclick:e=>answer(ch.cap,e.target)},ch.cap)));
       area.appendChild(opts);
     } else {
-      const capSource=CAPITALS.map(c=>({label:c.cap,sub:c.n,a2:c.a2,data:c}));
-      const ac=autocomplete(capSource,s=>answer(s.label,null),"Type the capital…");
+      const ac=plainInput("Type the capital…",v=>answer(v,null),"Guess");
       area.appendChild(ac.wrap); setTimeout(()=>ac.focus(),50);
     }
     refreshBar();
@@ -1076,9 +1086,10 @@ function nameall(view){
   const bar=h("div",{class:"chips"}); panel.appendChild(bar);
   const prog=h("div",{class:"prog"},h("i",{style:{width:"0%"}})); panel.appendChild(prog);
   const acHost=h("div"); panel.appendChild(acHost);
-  panel.appendChild(h("p",{class:"muted small",text:"The 5:00 timer starts on your first correct answer."}));
+  panel.appendChild(h("p",{class:"muted small",text:"No autocomplete — type the full name from memory and press Enter."}));
   const foundBox=h("div",{class:"row-wrap"}); panel.appendChild(foundBox);
-  const ac=autocomplete(countrySource,s=>add(s.data),"Type a country…"); acHost.appendChild(ac.wrap);
+  const ac=plainInput("Type a country…",v=>{ const c=NAME_LOOKUP[norm(v)]; if(!c){ toast("Not recognized: \""+v+"\""); return; } add(c); },"Add");
+  acHost.appendChild(ac.wrap);
   function refresh(){ bar.innerHTML=""; bar.append(
     h("div",{class:"chip"},h("div",{class:"k",text:"Found"}),h("div",{class:"v",text:count+"/"+total})),
     h("div",{class:"chip"},h("div",{class:"k",text:"Time"}),h("div",{class:"v",text:mmss(Math.max(0,timeLeft))})),
