@@ -440,7 +440,7 @@ async function loadTopo(url,obj){
   const r=await fetch(url); if(!r.ok)throw new Error("net"); const t=await r.json();
   const geo=topojson.feature(t,t.objects[obj]); _cache[url]=geo; return geo;
 }
-const WORLD_URL="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const WORLD_URL="https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 const US_URL="https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 const loading=()=>h("div",{class:"center",style:{padding:"40px"}},h("div",{class:"spin"}),h("p",{class:"muted",text:"Loading map…"}));
 const mapError=(retry)=>h("div",{class:"panel center"},h("div",{class:"big-em",text:"🛰️"}),h("h3",{text:"Couldn't load the map"}),h("p",{class:"muted",style:{textAlign:"center"},text:"This game needs an internet connection for map data."}),h("button",{class:"btn primary",onclick:retry},"Try again"));
